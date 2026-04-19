@@ -23,7 +23,8 @@ async function doExport() {
       store.params,
       format.value,
       quality.value,
-      (pct) => { progress.value = pct }
+      (pct) => { progress.value = pct },
+      store.watermark
     )
 
     const ext = format.value === 'jpeg' ? 'jpg' : 'png'

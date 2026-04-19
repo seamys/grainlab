@@ -2,6 +2,7 @@
 import { ref, watch, reactive, onMounted, onBeforeUnmount } from 'vue'
 import { useEditorStore } from '../stores/editor'
 import { useGalleryStore } from '../stores/gallery'
+import { drawWatermark } from '../filters/watermark'
 import FilterWorker from '../filters/filter.worker?worker'
 
 const store = useEditorStore()
@@ -103,7 +104,11 @@ worker.onmessage = (e: MessageEvent) => {
   const { buffer, width, height } = e.data
   if (!canvasRef.value) return
   const result = new ImageData(new Uint8ClampedArray(buffer), width, height)
-  canvasRef.value.getContext('2d')!.putImageData(result, 0, 0)
+  const ctx = canvasRef.value.getContext('2d')!
+  ctx.putImageData(result, 0, 0)
+  if (store.watermark.enabled) {
+    drawWatermark(ctx, width, height, store.watermark)
+  }
   if (pendingRender) {
     pendingRender = false
     dispatchRender()
@@ -141,6 +146,15 @@ onMounted(async () => {
 
 watch(
   () => store.params,
+  () => {
+    if (debounceTimer) clearTimeout(debounceTimer)
+    debounceTimer = setTimeout(() => { dispatchRender() }, 30)
+  },
+  { deep: true }
+)
+
+watch(
+  () => store.watermark,
   () => {
     if (debounceTimer) clearTimeout(debounceTimer)
     debounceTimer = setTimeout(() => { dispatchRender() }, 30)

@@ -26,6 +26,7 @@ const sections = reactive({
   toneCurve: true,
   halation: false,
   bloom: false,
+  watermark: false,
 })
 
 function toggle(key: keyof typeof sections) {
@@ -49,6 +50,35 @@ const leakPositionOptions = computed(() => [
   { value: 'top-right',    label: t('control.posTopRight') },
   { value: 'bottom-left',  label: t('control.posBottomLeft') },
   { value: 'bottom-right', label: t('control.posBottomRight') },
+])
+
+const watermarkPositionOptions = computed(() => [
+  { value: 'top-left',     label: t('control.posTopLeft') },
+  { value: 'top-right',    label: t('control.posTopRight') },
+  { value: 'bottom-left',  label: t('control.posBottomLeft') },
+  { value: 'bottom-right', label: t('control.posBottomRight') },
+  { value: 'center',       label: t('control.posCenter') },
+])
+
+const watermarkColorOptions = computed(() => [
+  { value: 'white', label: t('control.colorWhite') },
+  { value: 'black', label: t('control.colorBlack') },
+])
+
+const watermarkFontWeightOptions = computed(() => [
+  { value: 'bold',   label: t('control.fontWeightBold') },
+  { value: 'normal', label: t('control.fontWeightNormal') },
+])
+
+const watermarkFontStyleOptions = computed(() => [
+  { value: 'normal', label: t('control.fontStyleNormal') },
+  { value: 'italic', label: t('control.fontStyleItalic') },
+])
+
+const watermarkFontFamilyOptions = computed(() => [
+  { value: 'sans-serif', label: t('control.fontFamilySans') },
+  { value: 'serif',      label: t('control.fontFamilySerif') },
+  { value: 'monospace',  label: t('control.fontFamilyMono') },
 ])
 
 const halationColorOptions = computed(() => [
@@ -510,6 +540,121 @@ const highlightColor = computed({
     </div>
   </div>
 
+  <!-- Watermark -->
+  <div class="control-section">
+    <div class="section-header" @click="toggle('watermark')">
+      <span class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      <span class="section-title">{{ $t('control.watermark') }}</span>
+      <span class="section-toggle" :class="{ open: sections.watermark }">▼</span>
+    </div>
+    <div v-show="sections.watermark" class="section-body">
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.watermarkEnabled') }}</span>
+          <label class="toggle-switch">
+            <input type="checkbox" v-model="store.watermark.enabled" />
+            <span class="toggle-thumb" />
+          </label>
+        </div>
+      </div>
+      <template v-if="store.watermark.enabled">
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.watermarkText') }}</span>
+          </div>
+          <textarea
+            class="control-text-input"
+            rows="2"
+            :value="store.watermark.text"
+            @input="store.watermark.text = ($event.target as HTMLTextAreaElement).value"
+          />
+        </div>
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.watermarkPosition') }}</span>
+          </div>
+          <select
+            class="control-select"
+            :value="store.watermark.position"
+            @change="store.watermark.position = ($event.target as HTMLSelectElement).value as any"
+          >
+            <option v-for="opt in watermarkPositionOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.watermarkColor') }}</span>
+          </div>
+          <select
+            class="control-select"
+            :value="store.watermark.color"
+            @change="store.watermark.color = ($event.target as HTMLSelectElement).value as any"
+          >
+            <option v-for="opt in watermarkColorOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.watermarkOpacity') }}</span>
+            <span class="control-value">{{ store.watermark.opacity }}%</span>
+          </div>
+          <input
+            type="range" min="10" max="100" step="1"
+            :value="store.watermark.opacity"
+            @input="store.watermark.opacity = +($event.target as HTMLInputElement).value"
+          />
+        </div>
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.watermarkSize') }}</span>
+            <span class="control-value">{{ store.watermark.size }}</span>
+          </div>
+          <input
+            type="range" min="10" max="100" step="1"
+            :value="store.watermark.size"
+            @input="store.watermark.size = +($event.target as HTMLInputElement).value"
+          />
+        </div>
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.watermarkFontWeight') }}</span>
+          </div>
+          <select
+            class="control-select"
+            :value="store.watermark.fontWeight"
+            @change="store.watermark.fontWeight = ($event.target as HTMLSelectElement).value as any"
+          >
+            <option v-for="opt in watermarkFontWeightOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.watermarkFontStyle') }}</span>
+          </div>
+          <select
+            class="control-select"
+            :value="store.watermark.fontStyle"
+            @change="store.watermark.fontStyle = ($event.target as HTMLSelectElement).value as any"
+          >
+            <option v-for="opt in watermarkFontStyleOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.watermarkFontFamily') }}</span>
+          </div>
+          <select
+            class="control-select"
+            :value="store.watermark.fontFamily"
+            @change="store.watermark.fontFamily = ($event.target as HTMLSelectElement).value as any"
+          >
+            <option v-for="opt in watermarkFontFamilyOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+      </template>
+    </div>
+  </div>
+
   <!-- Reset -->
   <div class="reset-row">
     <button class="btn btn-sm btn-block" @click="store.resetToPreset()">{{ $t('control.resetToPreset') }}</button>
@@ -577,5 +722,69 @@ const highlightColor = computed({
   text-align: center;
   margin-top: 5px;
   letter-spacing: 0.01em;
+}
+
+/* ── Toggle switch ──────────────────────────────────────────── */
+.toggle-switch {
+  position: relative;
+  display: inline-flex;
+  width: 32px;
+  height: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-thumb {
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  border-radius: 9px;
+  transition: background var(--transition);
+}
+
+.toggle-thumb::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform var(--transition);
+}
+
+.toggle-switch input:checked ~ .toggle-thumb {
+  background: var(--accent);
+}
+
+.toggle-switch input:checked ~ .toggle-thumb::after {
+  transform: translateX(14px);
+}
+
+/* ── Text input ─────────────────────────────────────────────── */
+.control-text-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-size: 11px;
+  font-family: var(--font-family);
+  padding: 5px 8px;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.control-text-input:focus {
+  border-color: var(--accent);
 }
 </style>

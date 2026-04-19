@@ -71,6 +71,18 @@ export interface FilterParams {
   toneCurve: ToneCurveParams
 }
 
+export interface WatermarkParams {
+  enabled: boolean
+  text: string
+  position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center'
+  opacity: number // 0 to 100
+  size: number // 10 to 100
+  color: 'white' | 'black'
+  fontWeight: 'normal' | 'bold'
+  fontStyle: 'normal' | 'italic'
+  fontFamily: 'sans-serif' | 'serif' | 'monospace'
+}
+
 export interface FilmPreset {
   id: string
   name: string

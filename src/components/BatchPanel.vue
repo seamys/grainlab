@@ -50,7 +50,7 @@ async function startBatch() {
 
     const file = imageFiles.value[i]
     const base64 = await readFileAsBase64(file)
-    const data = await exportImage(base64, params, format.value, quality.value)
+    const data = await exportImage(base64, params, format.value, quality.value, undefined, store.watermark)
 
     const baseName = file.name.replace(/\.[^.]+$/, '')
     zip.file(`${baseName}_film.${ext}`, data, { binary: true })

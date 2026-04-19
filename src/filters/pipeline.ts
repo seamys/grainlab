@@ -1,4 +1,4 @@
-import type { FilterParams } from './types'
+import type { FilterParams, WatermarkParams } from './types'
 import { applyColorGrade } from './colorGrade'
 import { applyGrain } from './grain'
 import { applyVignette } from './vignette'
@@ -7,6 +7,7 @@ import { applyFade } from './fade'
 import { applyHalation } from './halation'
 import { applyBloom } from './bloom'
 import { applyToneCurve } from './toneCurve'
+import { drawWatermark } from './watermark'
 
 /**
  * Apply the full filter pipeline to a copy of the source ImageData.
@@ -53,7 +54,8 @@ export async function exportImage(
   params: FilterParams,
   format: 'jpeg' | 'png',
   quality: number,
-  onProgress?: (pct: number) => void
+  onProgress?: (pct: number) => void,
+  watermarkParams?: WatermarkParams
 ): Promise<Uint8Array> {
   onProgress?.(5)
   const img = await loadImageFromBase64(base64)
@@ -90,6 +92,10 @@ export async function exportImage(
 
   const processed = new ImageData(new Uint8ClampedArray(processedBuffer), img.width, img.height)
   ctx.putImageData(processed, 0, 0)
+
+  if (watermarkParams?.enabled) {
+    drawWatermark(ctx, img.width, img.height, watermarkParams)
+  }
   onProgress?.(90)
 
   const blob = await canvas.convertToBlob({

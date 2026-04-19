@@ -26,7 +26,8 @@ Give your digital photos the authentic look and feel of classic analog film — 
 |---------|-------------|
 | 🎞️ **11 Film Presets** | One-click simulation of iconic film stocks (Kodak Portra, Fuji Velvia, CineStill 800T, and more) |
 | 🎛️ **8 Adjustable Effects** | Grain, color grading, vignette, light leak, fade, halation, bloom, tone curve |
-| 🖼️ **Before / After** | Draggable split-view comparison at any time |
+| � **Text Watermark** | Customizable text watermark burned into exports — multi-line, font style, weight, family, position, opacity |
+| �🖼️ **Before / After** | Draggable split-view comparison at any time |
 | 📦 **Batch Export** | Apply a preset to multiple images and download as a ZIP |
 | 💾 **Gallery Persistence** | IndexedDB automatically saves your work across browser sessions |
 | 🌍 **9 Languages** | EN / 简中 / 繁中 / 日 / 한 / FR / DE / ES / PT |
@@ -84,7 +85,7 @@ Click the **Presets** tab on the left panel to browse 11 carefully crafted film 
 The **Adjustments** tab exposes 8 independent effect layers. Toggle **Simple / Advanced** mode at the top to show or hide per-channel controls.
 
 | Effect | Key Controls |
-|--------|-------------|
+|--------|--------------|
 | **Color Grading** | Exposure · Temperature · Tint · Saturation · Contrast · Highlights · Shadows |
 | **Film Grain** | Intensity · Size · Color Variance · Shadow Boost · Highlight Reduction |
 | **Vignette** | Intensity · Radius · Feather · Color (black→white) |
@@ -93,6 +94,7 @@ The **Adjustments** tab exposes 8 independent effect layers. Toggle **Simple / A
 | **Halation** | Intensity · Color (Red/Warm/Gold) · Radius |
 | **Bloom** | Intensity · Threshold · Radius |
 | **Tone Curve** | Shadows · Midtones · Highlights (5-point spline) |
+| **Watermark** | Enable · Text (multi-line) · Position · Color · Opacity · Size · Font Weight/Style/Family |
 
 Switch to **Advanced** mode to unlock **Color Toning Wheels** — three separate RGB color pickers for shadows, midtones, and highlights, giving you fine-grained creative control over the overall mood of the photo.
 
@@ -118,7 +120,23 @@ Click the **compare button** in the toolbar (or the icon next to the zoom contro
 
 ---
 
-### 6. Batch Processing
+### 6. Text Watermark
+
+Scroll to the bottom of the **Adjustments** panel and open the **Watermark** section.
+
+1. Toggle **Enable** to activate the watermark.
+2. Enter your **Text** — supports multi-line (press Enter for new lines).
+3. Set **Position**: Top-left · Top-right · Bottom-left · Bottom-right · Center.
+4. Choose **Color** (White or Black), **Opacity** (10–100%), **Size** (10–100).
+5. Adjust **Font**: Weight (Bold/Normal) · Style (Normal/Italic) · Family (Sans-serif/Serif/Monospace).
+
+The watermark is previewed live on the canvas and burned permanently into every exported image (single and batch).
+
+Watermark settings are stored separately from film presets, so switching presets never resets your watermark.
+
+---
+
+### 7. Batch Processing
 
 ![Batch processing panel](docs/images/batch.png)
 
@@ -129,7 +147,7 @@ Click the **compare button** in the toolbar (or the icon next to the zoom contro
 
 ---
 
-### 7. Gallery & Session Persistence
+### 8. Gallery & Session Persistence
 
 The **Film Strip** at the bottom of the screen shows thumbnails of all loaded images. Click any thumbnail to switch to that image. Your entire gallery — including images and per-image settings — is automatically saved in your browser's IndexedDB and restored the next time you open the app.
 

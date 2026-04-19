@@ -1,10 +1,33 @@
 import { defineStore } from 'pinia'
 import { ref, reactive, watch } from 'vue'
-import type { FilterParams } from '../filters/types'
+import type { FilterParams, WatermarkParams } from '../filters/types'
 import { presets, cloneParams } from '../presets'
 
 const STORAGE_KEY = 'grainlab_params'
 const PRESET_KEY = 'grainlab_preset'
+const WATERMARK_KEY = 'grainlab_watermark'
+
+const DEFAULT_WATERMARK: WatermarkParams = {
+  enabled: false,
+  text: '© GrainLab',
+  position: 'bottom-right',
+  opacity: 70,
+  size: 30,
+  color: 'white',
+  fontWeight: 'bold',
+  fontStyle: 'normal',
+  fontFamily: 'sans-serif',
+}
+
+function loadStoredWatermark(): WatermarkParams {
+  try {
+    const raw = localStorage.getItem(WATERMARK_KEY)
+    if (!raw) return { ...DEFAULT_WATERMARK }
+    return { ...DEFAULT_WATERMARK, ...JSON.parse(raw) }
+  } catch {
+    return { ...DEFAULT_WATERMARK }
+  }
+}
 
 /** Deep-merge stored params with current defaults so new fields always exist */
 function mergeParams(stored: Partial<FilterParams>, defaults: FilterParams): FilterParams {
@@ -41,6 +64,12 @@ export const useEditorStore = defineStore('editor', () => {
   const storedPresetId = localStorage.getItem(PRESET_KEY) ?? presets[0].id
   const currentPresetId = ref(storedPresetId)
   const params = reactive<FilterParams>(loadStoredParams(cloneParams(presets[0].params)))
+
+  // Watermark state – persisted separately so presets never overwrite it
+  const watermark = reactive<WatermarkParams>(loadStoredWatermark())
+  watch(watermark, (val) => {
+    localStorage.setItem(WATERMARK_KEY, JSON.stringify(val))
+  }, { deep: true })
 
   // UI state
   const showBeforeAfter = ref(false)
@@ -117,6 +146,7 @@ export const useEditorStore = defineStore('editor', () => {
     imageLoaded,
     currentPresetId,
     params,
+    watermark,
     showBeforeAfter,
     isExporting,
     processing,
