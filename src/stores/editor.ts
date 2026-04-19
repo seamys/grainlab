@@ -1,7 +1,19 @@
 import { defineStore } from 'pinia'
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import type { FilterParams } from '../filters/types'
 import { presets, cloneParams } from '../presets'
+
+const STORAGE_KEY = 'grainlab_params'
+const PRESET_KEY = 'grainlab_preset'
+
+function loadStoredParams(): FilterParams | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
 
 export const useEditorStore = defineStore('editor', () => {
   // Image state
@@ -10,14 +22,25 @@ export const useEditorStore = defineStore('editor', () => {
   const filePath = ref('')
   const imageLoaded = ref(false)
 
-  // Filter params – initialized to first preset
-  const currentPresetId = ref(presets[0].id)
-  const params = reactive<FilterParams>(cloneParams(presets[0].params))
+  // Filter params – restored from localStorage or initialized to first preset
+  const storedPresetId = localStorage.getItem(PRESET_KEY) ?? presets[0].id
+  const currentPresetId = ref(storedPresetId)
+  const storedParams = loadStoredParams() ?? cloneParams(presets[0].params)
+  const params = reactive<FilterParams>(storedParams)
 
   // UI state
   const showBeforeAfter = ref(false)
   const isExporting = ref(false)
   const processing = ref(false)
+
+  // Persist params and presetId to localStorage on change
+  watch(params, (val) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
+  }, { deep: true })
+
+  watch(currentPresetId, (val) => {
+    localStorage.setItem(PRESET_KEY, val)
+  })
 
   function loadImage(base64: string, name: string, path: string) {
     originalBase64.value = base64

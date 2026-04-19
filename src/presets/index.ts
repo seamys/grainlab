@@ -20,7 +20,7 @@ export const presets: FilmPreset[] = [
         highlightG: -3,
         highlightB: 5,
       },
-      grain: { intensity: 25, size: 1.5 },
+      grain: { intensity: 12, size: 1.5 },
       vignette: { intensity: 18, radius: 1.2 },
       lightLeak: { intensity: 0, color: 'warm', position: 'top-right' },
       fade: { intensity: 15 },

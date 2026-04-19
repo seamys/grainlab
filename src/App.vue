@@ -18,11 +18,24 @@ function toggleTheme() {
   applyTheme(isDark.value)
 }
 
-onMounted(() => {
+onMounted(async () => {
   const saved = localStorage.getItem('theme')
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
   isDark.value = saved ? saved === 'dark' : prefersDark
   applyTheme(isDark.value)
+
+  // Load default example image
+  try {
+    const res = await fetch('/examples/example.jpg')
+    const blob = await res.blob()
+    const reader = new FileReader()
+    reader.onload = () => {
+      store.loadImage(reader.result as string, 'example.jpg', '')
+    }
+    reader.readAsDataURL(blob)
+  } catch {
+    // silently ignore if example image is not available
+  }
 })
 import ImageCanvas from './components/ImageCanvas.vue'
 import PresetPanel from './components/PresetPanel.vue'
