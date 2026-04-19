@@ -4,10 +4,13 @@ import { applyGrain } from './grain'
 import { applyVignette } from './vignette'
 import { applyLightLeak } from './lightLeak'
 import { applyFade } from './fade'
+import { applyHalation } from './halation'
+import { applyBloom } from './bloom'
+import { applyToneCurve } from './toneCurve'
 
 /**
  * Apply the full filter pipeline to a copy of the source ImageData.
- * Order: colorGrade → fade → grain → vignette → lightLeak
+ * Order: toneCurve → colorGrade → fade → halation → bloom → grain → vignette → lightLeak
  */
 export function applyFilters(source: ImageData, params: FilterParams): ImageData {
   const result = new ImageData(
@@ -16,8 +19,11 @@ export function applyFilters(source: ImageData, params: FilterParams): ImageData
     source.height
   )
 
+  applyToneCurve(result, params.toneCurve)
   applyColorGrade(result, params.colorGrade)
   applyFade(result, params.fade)
+  applyHalation(result, params.halation)
+  applyBloom(result, params.bloom)
   applyGrain(result, params.grain)
   applyVignette(result, params.vignette)
   applyLightLeak(result, params.lightLeak)

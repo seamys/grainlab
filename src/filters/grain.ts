@@ -11,9 +11,9 @@ function seededRandom(x: number, y: number, seed: number): number {
   return (h & 0x7fffffff) / 0x7fffffff
 }
 
-function seededGaussian(x: number, y: number): number {
-  const u = Math.max(0.0001, seededRandom(x, y, 1))
-  const v = seededRandom(x + 7919, y + 6037, 2)
+function seededGaussian(x: number, y: number, seedOffset = 0): number {
+  const u = Math.max(0.0001, seededRandom(x, y, 1 + seedOffset))
+  const v = seededRandom(x + 7919, y + 6037, 2 + seedOffset)
   return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v)
 }
 
@@ -23,22 +23,39 @@ export function applyGrain(imageData: ImageData, params: GrainParams): void {
   const data = imageData.data
   const width = imageData.width
   const height = imageData.height
-  const strength = (params.intensity / 100) * 60 // max noise amplitude ~60
+  const strength = (params.intensity / 100) * 60
   const grainSize = Math.max(1, Math.round(params.size))
+  const colorVariance = (params.colorVariance ?? 0) / 100
+  const shadowBoost = (params.shadowBoost ?? 0) / 100 * 1.5
+  const highlightReduction = (params.highlightReduction ?? 0) / 100
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const idx = (y * width + x) * 4
-
-      // Sample noise at grain-sized blocks for larger grain
       const gx = (x / grainSize) | 0
       const gy = (y / grainSize) | 0
-      const noise = seededGaussian(gx, gy) * strength
 
-      // Apply noise uniformly to RGB (luminance-only approximation)
-      const r = data[idx] + noise
-      const g = data[idx + 1] + noise
-      const b = data[idx + 2] + noise
+      const lum = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]
+
+      // Luminance-based modulation
+      const shadowFactor = lum < 128 ? 1 + shadowBoost * (1 - lum / 128) : 1
+      const highlightFactor = lum > 200 ? 1 - highlightReduction * ((lum - 200) / 55) : 1
+      const lumFactor = shadowFactor * highlightFactor
+
+      const baseNoise = seededGaussian(gx, gy, 0) * strength
+      let rNoise = baseNoise
+      let gNoise = baseNoise
+      let bNoise = baseNoise
+
+      if (colorVariance > 0) {
+        rNoise = baseNoise + (seededGaussian(gx, gy, 10) * strength - baseNoise) * colorVariance
+        gNoise = baseNoise + (seededGaussian(gx, gy, 20) * strength - baseNoise) * colorVariance
+        bNoise = baseNoise + (seededGaussian(gx, gy, 30) * strength - baseNoise) * colorVariance
+      }
+
+      const r = data[idx] + rNoise * lumFactor
+      const g = data[idx + 1] + gNoise * lumFactor
+      const b = data[idx + 2] + bNoise * lumFactor
 
       data[idx] = r < 0 ? 0 : r > 255 ? 255 : (r + 0.5) | 0
       data[idx + 1] = g < 0 ? 0 : g > 255 ? 255 : (g + 0.5) | 0

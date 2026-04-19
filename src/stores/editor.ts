@@ -6,12 +6,27 @@ import { presets, cloneParams } from '../presets'
 const STORAGE_KEY = 'grainlab_params'
 const PRESET_KEY = 'grainlab_preset'
 
-function loadStoredParams(): FilterParams | null {
+/** Deep-merge stored params with current defaults so new fields always exist */
+function mergeParams(stored: Partial<FilterParams>, defaults: FilterParams): FilterParams {
+  return {
+    colorGrade: { ...defaults.colorGrade, ...stored.colorGrade },
+    grain:      { ...defaults.grain,      ...stored.grain },
+    vignette:   { ...defaults.vignette,   ...stored.vignette },
+    lightLeak:  { ...defaults.lightLeak,  ...stored.lightLeak },
+    fade:       { ...defaults.fade,       ...stored.fade },
+    halation:   { ...defaults.halation,   ...stored.halation },
+    bloom:      { ...defaults.bloom,      ...stored.bloom },
+    toneCurve:  { ...defaults.toneCurve,  ...stored.toneCurve },
+  }
+}
+
+function loadStoredParams(defaults: FilterParams): FilterParams {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : null
+    if (!raw) return cloneParams(defaults)
+    return mergeParams(JSON.parse(raw), defaults)
   } catch {
-    return null
+    return cloneParams(defaults)
   }
 }
 
@@ -25,8 +40,7 @@ export const useEditorStore = defineStore('editor', () => {
   // Filter params – restored from localStorage or initialized to first preset
   const storedPresetId = localStorage.getItem(PRESET_KEY) ?? presets[0].id
   const currentPresetId = ref(storedPresetId)
-  const storedParams = loadStoredParams() ?? cloneParams(presets[0].params)
-  const params = reactive<FilterParams>(storedParams)
+  const params = reactive<FilterParams>(loadStoredParams(cloneParams(presets[0].params)))
 
   // UI state
   const showBeforeAfter = ref(false)
@@ -60,6 +74,9 @@ export const useEditorStore = defineStore('editor', () => {
     Object.assign(params.vignette, cloned.vignette)
     Object.assign(params.lightLeak, cloned.lightLeak)
     Object.assign(params.fade, cloned.fade)
+    Object.assign(params.halation, cloned.halation)
+    Object.assign(params.bloom, cloned.bloom)
+    Object.assign(params.toneCurve, cloned.toneCurve)
   }
 
   function resetToPreset() {

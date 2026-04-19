@@ -12,6 +12,9 @@ const sections = reactive({
   vignette: true,
   lightLeak: true,
   fade: true,
+  toneCurve: false,
+  halation: false,
+  bloom: false,
 })
 
 function toggle(key: keyof typeof sections) {
@@ -34,6 +37,12 @@ const leakPositionOptions = computed(() => [
   { value: 'top-right', label: t('control.posTopRight') },
   { value: 'bottom-left', label: t('control.posBottomLeft') },
   { value: 'bottom-right', label: t('control.posBottomRight') },
+])
+
+const halationColorOptions = computed(() => [
+  { value: 'red',  label: t('control.colorRed') },
+  { value: 'warm', label: t('control.colorWarm') },
+  { value: 'gold', label: t('control.colorGold') },
 ])
 </script>
 
@@ -101,6 +110,48 @@ const leakPositionOptions = computed(() => [
           @input="store.params.colorGrade.contrast = +($event.target as HTMLInputElement).value"
         />
       </div>
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.exposure') }}</span>
+          <span class="control-value">{{ formatValue(store.params.colorGrade.exposure) }}</span>
+        </div>
+        <input
+          type="range"
+          min="-100"
+          max="100"
+          step="1"
+          :value="store.params.colorGrade.exposure"
+          @input="store.params.colorGrade.exposure = +($event.target as HTMLInputElement).value"
+        />
+      </div>
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.highlights') }}</span>
+          <span class="control-value">{{ formatValue(store.params.colorGrade.highlights) }}</span>
+        </div>
+        <input
+          type="range"
+          min="-100"
+          max="100"
+          step="1"
+          :value="store.params.colorGrade.highlights"
+          @input="store.params.colorGrade.highlights = +($event.target as HTMLInputElement).value"
+        />
+      </div>
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.shadows') }}</span>
+          <span class="control-value">{{ formatValue(store.params.colorGrade.shadows) }}</span>
+        </div>
+        <input
+          type="range"
+          min="-100"
+          max="100"
+          step="1"
+          :value="store.params.colorGrade.shadows"
+          @input="store.params.colorGrade.shadows = +($event.target as HTMLInputElement).value"
+        />
+      </div>
     </div>
   </div>
 
@@ -139,6 +190,48 @@ const leakPositionOptions = computed(() => [
           @input="store.params.grain.size = +($event.target as HTMLInputElement).value"
         />
       </div>
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.grainColorVariance') }}</span>
+          <span class="control-value">{{ store.params.grain.colorVariance }}</span>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          :value="store.params.grain.colorVariance"
+          @input="store.params.grain.colorVariance = +($event.target as HTMLInputElement).value"
+        />
+      </div>
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.grainShadowBoost') }}</span>
+          <span class="control-value">{{ store.params.grain.shadowBoost }}</span>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          :value="store.params.grain.shadowBoost"
+          @input="store.params.grain.shadowBoost = +($event.target as HTMLInputElement).value"
+        />
+      </div>
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.grainHighlightReduction') }}</span>
+          <span class="control-value">{{ store.params.grain.highlightReduction }}</span>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          :value="store.params.grain.highlightReduction"
+          @input="store.params.grain.highlightReduction = +($event.target as HTMLInputElement).value"
+        />
+      </div>
     </div>
   </div>
 
@@ -175,6 +268,34 @@ const leakPositionOptions = computed(() => [
           step="0.1"
           :value="store.params.vignette.radius"
           @input="store.params.vignette.radius = +($event.target as HTMLInputElement).value"
+        />
+      </div>
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.vignetteFeather') }}</span>
+          <span class="control-value">{{ store.params.vignette.feather }}</span>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          :value="store.params.vignette.feather"
+          @input="store.params.vignette.feather = +($event.target as HTMLInputElement).value"
+        />
+      </div>
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.vignetteColor') }}</span>
+          <span class="control-value">{{ store.params.vignette.color }}</span>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          :value="store.params.vignette.color"
+          @input="store.params.vignette.color = +($event.target as HTMLInputElement).value"
         />
       </div>
     </div>
@@ -252,6 +373,118 @@ const leakPositionOptions = computed(() => [
           :value="store.params.fade.intensity"
           @input="store.params.fade.intensity = +($event.target as HTMLInputElement).value"
         />
+      </div>
+    </div>
+  </div>
+
+  <!-- Tone Curve -->
+  <div class="control-section">
+    <div class="section-header" @click="toggle('toneCurve')">
+      <span class="section-title">{{ $t('control.toneCurve') }}</span>
+      <span class="section-toggle" :class="{ open: sections.toneCurve }">▼</span>
+    </div>
+    <div v-show="sections.toneCurve" class="section-body">
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.toneCurveShadows') }}</span>
+          <span class="control-value">{{ formatValue(store.params.toneCurve.shadows) }}</span>
+        </div>
+        <input type="range" min="-50" max="50" step="1"
+          :value="store.params.toneCurve.shadows"
+          @input="store.params.toneCurve.shadows = +($event.target as HTMLInputElement).value" />
+      </div>
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.toneCurveMidtones') }}</span>
+          <span class="control-value">{{ formatValue(store.params.toneCurve.midtones) }}</span>
+        </div>
+        <input type="range" min="-50" max="50" step="1"
+          :value="store.params.toneCurve.midtones"
+          @input="store.params.toneCurve.midtones = +($event.target as HTMLInputElement).value" />
+      </div>
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.toneCurveHighlights') }}</span>
+          <span class="control-value">{{ formatValue(store.params.toneCurve.highlights) }}</span>
+        </div>
+        <input type="range" min="-50" max="50" step="1"
+          :value="store.params.toneCurve.highlights"
+          @input="store.params.toneCurve.highlights = +($event.target as HTMLInputElement).value" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Halation -->
+  <div class="control-section">
+    <div class="section-header" @click="toggle('halation')">
+      <span class="section-title">{{ $t('control.halation') }}</span>
+      <span class="section-toggle" :class="{ open: sections.halation }">▼</span>
+    </div>
+    <div v-show="sections.halation" class="section-body">
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.halationIntensity') }}</span>
+          <span class="control-value">{{ store.params.halation.intensity }}</span>
+        </div>
+        <input type="range" min="0" max="100" step="1"
+          :value="store.params.halation.intensity"
+          @input="store.params.halation.intensity = +($event.target as HTMLInputElement).value" />
+      </div>
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.halationRadius') }}</span>
+          <span class="control-value">{{ store.params.halation.radius }}</span>
+        </div>
+        <input type="range" min="1" max="20" step="1"
+          :value="store.params.halation.radius"
+          @input="store.params.halation.radius = +($event.target as HTMLInputElement).value" />
+      </div>
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.halationColor') }}</span>
+        </div>
+        <select class="control-select"
+          :value="store.params.halation.color"
+          @change="store.params.halation.color = ($event.target as HTMLSelectElement).value as any">
+          <option v-for="opt in halationColorOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bloom -->
+  <div class="control-section">
+    <div class="section-header" @click="toggle('bloom')">
+      <span class="section-title">{{ $t('control.bloom') }}</span>
+      <span class="section-toggle" :class="{ open: sections.bloom }">▼</span>
+    </div>
+    <div v-show="sections.bloom" class="section-body">
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.bloomIntensity') }}</span>
+          <span class="control-value">{{ store.params.bloom.intensity }}</span>
+        </div>
+        <input type="range" min="0" max="100" step="1"
+          :value="store.params.bloom.intensity"
+          @input="store.params.bloom.intensity = +($event.target as HTMLInputElement).value" />
+      </div>
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.bloomThreshold') }}</span>
+          <span class="control-value">{{ store.params.bloom.threshold }}</span>
+        </div>
+        <input type="range" min="0" max="100" step="1"
+          :value="store.params.bloom.threshold"
+          @input="store.params.bloom.threshold = +($event.target as HTMLInputElement).value" />
+      </div>
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.bloomRadius') }}</span>
+          <span class="control-value">{{ store.params.bloom.radius }}</span>
+        </div>
+        <input type="range" min="1" max="20" step="1"
+          :value="store.params.bloom.radius"
+          @input="store.params.bloom.radius = +($event.target as HTMLInputElement).value" />
       </div>
     </div>
   </div>
