@@ -548,6 +548,51 @@ input[type='range']::-moz-range-thumb {
   cursor: pointer;
 }
 
+/* ===== Gradient slider tracks ===== */
+input[type='range'][data-gradient="temperature"],
+input[type='range'][data-gradient="temperature"]::-webkit-slider-runnable-track,
+input[type='range'][data-gradient="temperature"]::-moz-range-track {
+  background: linear-gradient(to right, #4facf7 0%, #888888 50%, #ff8c42 100%);
+}
+input[type='range'][data-gradient="tint"],
+input[type='range'][data-gradient="tint"]::-webkit-slider-runnable-track,
+input[type='range'][data-gradient="tint"]::-moz-range-track {
+  background: linear-gradient(to right, #4caf50 0%, #888888 50%, #e91e8c 100%);
+}
+input[type='range'][data-gradient="saturation"],
+input[type='range'][data-gradient="saturation"]::-webkit-slider-runnable-track,
+input[type='range'][data-gradient="saturation"]::-moz-range-track {
+  background: linear-gradient(to right, #555555 0%, var(--accent) 100%);
+}
+input[type='range'][data-gradient="exposure"],
+input[type='range'][data-gradient="exposure"]::-webkit-slider-runnable-track,
+input[type='range'][data-gradient="exposure"]::-moz-range-track {
+  background: linear-gradient(to right, #111111 0%, #666666 50%, #eeeeee 100%);
+}
+input[type='range'][data-gradient="contrast"],
+input[type='range'][data-gradient="contrast"]::-webkit-slider-runnable-track,
+input[type='range'][data-gradient="contrast"]::-moz-range-track {
+  background: linear-gradient(to right, #333333 0%, #888888 50%, #dddddd 100%);
+}
+input[type='range'][data-gradient="highlights"],
+input[type='range'][data-gradient="highlights"]::-webkit-slider-runnable-track,
+input[type='range'][data-gradient="highlights"]::-moz-range-track {
+  background: linear-gradient(to right, #555555 0%, #eeeeee 100%);
+}
+input[type='range'][data-gradient="shadows"],
+input[type='range'][data-gradient="shadows"]::-webkit-slider-runnable-track,
+input[type='range'][data-gradient="shadows"]::-moz-range-track {
+  background: linear-gradient(to right, #111111 0%, #888888 100%);
+}
+input[type='range'][data-gradient]::-webkit-slider-runnable-track {
+  height: 2px;
+  border-radius: 1px;
+}
+input[type='range'][data-gradient]::-moz-range-track {
+  height: 2px;
+  border-radius: 1px;
+}
+
 /* ===== Select ===== */
 .control-select {
   width: 100%;

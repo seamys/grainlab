@@ -1,18 +1,29 @@
 <script setup lang="ts">
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEditorStore } from '../stores/editor'
+import ToneCurveEditor from './ToneCurveEditor.vue'
+import ColorWheel from './ColorWheel.vue'
 
 const { t } = useI18n()
 const store = useEditorStore()
 
+// ── Simple / Advanced mode ───────────────────────────────────
+const advancedMode = ref(false)
+
+onMounted(() => {
+  advancedMode.value = localStorage.getItem('grainlab_advanced') === 'true'
+})
+watch(advancedMode, v => localStorage.setItem('grainlab_advanced', String(v)))
+
+// ── Section collapse ─────────────────────────────────────────
 const sections = reactive({
   color: true,
   grain: true,
   vignette: true,
   lightLeak: true,
   fade: true,
-  toneCurve: false,
+  toneCurve: true,
   halation: false,
   bloom: false,
 })
@@ -26,16 +37,17 @@ function formatValue(val: number, showSign = true): string {
   return String(val)
 }
 
+// ── Select options ────────────────────────────────────────────
 const leakColorOptions = computed(() => [
-  { value: 'warm', label: t('control.colorWarm') },
-  { value: 'cool', label: t('control.colorCool') },
+  { value: 'warm',    label: t('control.colorWarm') },
+  { value: 'cool',    label: t('control.colorCool') },
   { value: 'vintage', label: t('control.colorVintage') },
 ])
 
 const leakPositionOptions = computed(() => [
-  { value: 'top-left', label: t('control.posTopLeft') },
-  { value: 'top-right', label: t('control.posTopRight') },
-  { value: 'bottom-left', label: t('control.posBottomLeft') },
+  { value: 'top-left',     label: t('control.posTopLeft') },
+  { value: 'top-right',    label: t('control.posTopRight') },
+  { value: 'bottom-left',  label: t('control.posBottomLeft') },
   { value: 'bottom-right', label: t('control.posBottomRight') },
 ])
 
@@ -44,9 +56,63 @@ const halationColorOptions = computed(() => [
   { value: 'warm', label: t('control.colorWarm') },
   { value: 'gold', label: t('control.colorGold') },
 ])
+
+// ── Color wheel v-models ──────────────────────────────────────
+const shadowColor = computed({
+  get: () => ({
+    r: store.params.colorGrade.shadowR,
+    g: store.params.colorGrade.shadowG,
+    b: store.params.colorGrade.shadowB,
+  }),
+  set: (v) => {
+    store.params.colorGrade.shadowR = v.r
+    store.params.colorGrade.shadowG = v.g
+    store.params.colorGrade.shadowB = v.b
+  },
+})
+
+const midtoneColor = computed({
+  get: () => ({
+    r: store.params.colorGrade.midtoneR,
+    g: store.params.colorGrade.midtoneG,
+    b: store.params.colorGrade.midtoneB,
+  }),
+  set: (v) => {
+    store.params.colorGrade.midtoneR = v.r
+    store.params.colorGrade.midtoneG = v.g
+    store.params.colorGrade.midtoneB = v.b
+  },
+})
+
+const highlightColor = computed({
+  get: () => ({
+    r: store.params.colorGrade.highlightR,
+    g: store.params.colorGrade.highlightG,
+    b: store.params.colorGrade.highlightB,
+  }),
+  set: (v) => {
+    store.params.colorGrade.highlightR = v.r
+    store.params.colorGrade.highlightG = v.g
+    store.params.colorGrade.highlightB = v.b
+  },
+})
 </script>
 
 <template>
+  <!-- Mode toggle -->
+  <div class="mode-toggle">
+    <button
+      class="mode-btn"
+      :class="{ active: !advancedMode }"
+      @click="advancedMode = false"
+    >{{ $t('control.simpleMode') }}</button>
+    <button
+      class="mode-btn"
+      :class="{ active: advancedMode }"
+      @click="advancedMode = true"
+    >{{ $t('control.advancedMode') }}</button>
+  </div>
+
   <!-- Color Grading -->
   <div class="control-section">
     <div class="section-header" @click="toggle('color')">
@@ -54,108 +120,112 @@ const halationColorOptions = computed(() => [
       <span class="section-toggle" :class="{ open: sections.color }">▼</span>
     </div>
     <div v-show="sections.color" class="section-body">
-      <div class="control-row">
-        <div class="control-header">
-          <span class="control-label">{{ $t('control.temperature') }}</span>
-          <span class="control-value">{{ formatValue(store.params.colorGrade.temperature) }}</span>
-        </div>
-        <input
-          type="range"
-          min="-100"
-          max="100"
-          step="1"
-          :value="store.params.colorGrade.temperature"
-          @input="store.params.colorGrade.temperature = +($event.target as HTMLInputElement).value"
-        />
-      </div>
-      <div class="control-row">
-        <div class="control-header">
-          <span class="control-label">{{ $t('control.tint') }}</span>
-          <span class="control-value">{{ formatValue(store.params.colorGrade.tint) }}</span>
-        </div>
-        <input
-          type="range"
-          min="-100"
-          max="100"
-          step="1"
-          :value="store.params.colorGrade.tint"
-          @input="store.params.colorGrade.tint = +($event.target as HTMLInputElement).value"
-        />
-      </div>
-      <div class="control-row">
-        <div class="control-header">
-          <span class="control-label">{{ $t('control.saturation') }}</span>
-          <span class="control-value">{{ formatValue(store.params.colorGrade.saturation) }}</span>
-        </div>
-        <input
-          type="range"
-          min="-100"
-          max="100"
-          step="1"
-          :value="store.params.colorGrade.saturation"
-          @input="store.params.colorGrade.saturation = +($event.target as HTMLInputElement).value"
-        />
-      </div>
-      <div class="control-row">
-        <div class="control-header">
-          <span class="control-label">{{ $t('control.contrast') }}</span>
-          <span class="control-value">{{ formatValue(store.params.colorGrade.contrast) }}</span>
-        </div>
-        <input
-          type="range"
-          min="-100"
-          max="100"
-          step="1"
-          :value="store.params.colorGrade.contrast"
-          @input="store.params.colorGrade.contrast = +($event.target as HTMLInputElement).value"
-        />
-      </div>
+
       <div class="control-row">
         <div class="control-header">
           <span class="control-label">{{ $t('control.exposure') }}</span>
           <span class="control-value">{{ formatValue(store.params.colorGrade.exposure) }}</span>
         </div>
         <input
-          type="range"
-          min="-100"
-          max="100"
-          step="1"
+          type="range" min="-100" max="100" step="1"
+          data-gradient="exposure"
           :value="store.params.colorGrade.exposure"
           @input="store.params.colorGrade.exposure = +($event.target as HTMLInputElement).value"
         />
       </div>
+
       <div class="control-row">
         <div class="control-header">
-          <span class="control-label">{{ $t('control.highlights') }}</span>
-          <span class="control-value">{{ formatValue(store.params.colorGrade.highlights) }}</span>
+          <span class="control-label">{{ $t('control.temperature') }}</span>
+          <span class="control-value">{{ formatValue(store.params.colorGrade.temperature) }}</span>
         </div>
         <input
-          type="range"
-          min="-100"
-          max="100"
-          step="1"
-          :value="store.params.colorGrade.highlights"
-          @input="store.params.colorGrade.highlights = +($event.target as HTMLInputElement).value"
+          type="range" min="-100" max="100" step="1"
+          data-gradient="temperature"
+          :value="store.params.colorGrade.temperature"
+          @input="store.params.colorGrade.temperature = +($event.target as HTMLInputElement).value"
         />
       </div>
+
+      <div v-if="advancedMode" class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.tint') }}</span>
+          <span class="control-value">{{ formatValue(store.params.colorGrade.tint) }}</span>
+        </div>
+        <input
+          type="range" min="-100" max="100" step="1"
+          data-gradient="tint"
+          :value="store.params.colorGrade.tint"
+          @input="store.params.colorGrade.tint = +($event.target as HTMLInputElement).value"
+        />
+      </div>
+
       <div class="control-row">
         <div class="control-header">
-          <span class="control-label">{{ $t('control.shadows') }}</span>
-          <span class="control-value">{{ formatValue(store.params.colorGrade.shadows) }}</span>
+          <span class="control-label">{{ $t('control.saturation') }}</span>
+          <span class="control-value">{{ formatValue(store.params.colorGrade.saturation) }}</span>
         </div>
         <input
-          type="range"
-          min="-100"
-          max="100"
-          step="1"
-          :value="store.params.colorGrade.shadows"
-          @input="store.params.colorGrade.shadows = +($event.target as HTMLInputElement).value"
+          type="range" min="-100" max="100" step="1"
+          data-gradient="saturation"
+          :value="store.params.colorGrade.saturation"
+          @input="store.params.colorGrade.saturation = +($event.target as HTMLInputElement).value"
         />
       </div>
+
+      <div class="control-row">
+        <div class="control-header">
+          <span class="control-label">{{ $t('control.contrast') }}</span>
+          <span class="control-value">{{ formatValue(store.params.colorGrade.contrast) }}</span>
+        </div>
+        <input
+          type="range" min="-100" max="100" step="1"
+          data-gradient="contrast"
+          :value="store.params.colorGrade.contrast"
+          @input="store.params.colorGrade.contrast = +($event.target as HTMLInputElement).value"
+        />
+      </div>
+
+      <template v-if="advancedMode">
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.highlights') }}</span>
+            <span class="control-value">{{ formatValue(store.params.colorGrade.highlights) }}</span>
+          </div>
+          <input
+            type="range" min="-100" max="100" step="1"
+            data-gradient="highlights"
+            :value="store.params.colorGrade.highlights"
+            @input="store.params.colorGrade.highlights = +($event.target as HTMLInputElement).value"
+          />
+        </div>
+
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.shadows') }}</span>
+            <span class="control-value">{{ formatValue(store.params.colorGrade.shadows) }}</span>
+          </div>
+          <input
+            type="range" min="-100" max="100" step="1"
+            data-gradient="shadows"
+            :value="store.params.colorGrade.shadows"
+            @input="store.params.colorGrade.shadows = +($event.target as HTMLInputElement).value"
+          />
+        </div>
+
+        <!-- Color Toning wheels -->
+        <div class="subsection-header">{{ $t('control.colorToning') }}</div>
+        <div class="wheels-row">
+          <ColorWheel v-model="shadowColor"    :label="$t('control.toneCurveShadows')" />
+          <ColorWheel v-model="midtoneColor"   :label="$t('control.toneCurveMidtones')" />
+          <ColorWheel v-model="highlightColor" :label="$t('control.toneCurveHighlights')" />
+        </div>
+        <p class="wheels-hint">{{ $t('control.colorToningHint') }}</p>
+      </template>
     </div>
   </div>
 
-  <!-- Grain -->
+  <!-- Film Grain -->
   <div class="control-section">
     <div class="section-header" @click="toggle('grain')">
       <span class="section-title">{{ $t('control.grain') }}</span>
@@ -168,70 +238,58 @@ const halationColorOptions = computed(() => [
           <span class="control-value">{{ store.params.grain.intensity }}</span>
         </div>
         <input
-          type="range"
-          min="0"
-          max="100"
-          step="1"
+          type="range" min="0" max="100" step="1"
           :value="store.params.grain.intensity"
           @input="store.params.grain.intensity = +($event.target as HTMLInputElement).value"
         />
       </div>
-      <div class="control-row">
-        <div class="control-header">
-          <span class="control-label">{{ $t('control.grainSize') }}</span>
-          <span class="control-value">{{ store.params.grain.size.toFixed(1) }}</span>
+
+      <template v-if="advancedMode">
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.grainSize') }}</span>
+            <span class="control-value">{{ store.params.grain.size.toFixed(1) }}</span>
+          </div>
+          <input
+            type="range" min="1" max="3" step="0.5"
+            :value="store.params.grain.size"
+            @input="store.params.grain.size = +($event.target as HTMLInputElement).value"
+          />
         </div>
-        <input
-          type="range"
-          min="1"
-          max="3"
-          step="0.5"
-          :value="store.params.grain.size"
-          @input="store.params.grain.size = +($event.target as HTMLInputElement).value"
-        />
-      </div>
-      <div class="control-row">
-        <div class="control-header">
-          <span class="control-label">{{ $t('control.grainColorVariance') }}</span>
-          <span class="control-value">{{ store.params.grain.colorVariance }}</span>
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.grainColorVariance') }}</span>
+            <span class="control-value">{{ store.params.grain.colorVariance }}</span>
+          </div>
+          <input
+            type="range" min="0" max="100" step="1"
+            :value="store.params.grain.colorVariance"
+            @input="store.params.grain.colorVariance = +($event.target as HTMLInputElement).value"
+          />
         </div>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          step="1"
-          :value="store.params.grain.colorVariance"
-          @input="store.params.grain.colorVariance = +($event.target as HTMLInputElement).value"
-        />
-      </div>
-      <div class="control-row">
-        <div class="control-header">
-          <span class="control-label">{{ $t('control.grainShadowBoost') }}</span>
-          <span class="control-value">{{ store.params.grain.shadowBoost }}</span>
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.grainShadowBoost') }}</span>
+            <span class="control-value">{{ store.params.grain.shadowBoost }}</span>
+          </div>
+          <input
+            type="range" min="0" max="100" step="1"
+            :value="store.params.grain.shadowBoost"
+            @input="store.params.grain.shadowBoost = +($event.target as HTMLInputElement).value"
+          />
         </div>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          step="1"
-          :value="store.params.grain.shadowBoost"
-          @input="store.params.grain.shadowBoost = +($event.target as HTMLInputElement).value"
-        />
-      </div>
-      <div class="control-row">
-        <div class="control-header">
-          <span class="control-label">{{ $t('control.grainHighlightReduction') }}</span>
-          <span class="control-value">{{ store.params.grain.highlightReduction }}</span>
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.grainHighlightReduction') }}</span>
+            <span class="control-value">{{ store.params.grain.highlightReduction }}</span>
+          </div>
+          <input
+            type="range" min="0" max="100" step="1"
+            :value="store.params.grain.highlightReduction"
+            @input="store.params.grain.highlightReduction = +($event.target as HTMLInputElement).value"
+          />
         </div>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          step="1"
-          :value="store.params.grain.highlightReduction"
-          @input="store.params.grain.highlightReduction = +($event.target as HTMLInputElement).value"
-        />
-      </div>
+      </template>
     </div>
   </div>
 
@@ -248,108 +306,47 @@ const halationColorOptions = computed(() => [
           <span class="control-value">{{ store.params.vignette.intensity }}</span>
         </div>
         <input
-          type="range"
-          min="0"
-          max="100"
-          step="1"
+          type="range" min="0" max="100" step="1"
           :value="store.params.vignette.intensity"
           @input="store.params.vignette.intensity = +($event.target as HTMLInputElement).value"
         />
       </div>
-      <div class="control-row">
-        <div class="control-header">
-          <span class="control-label">{{ $t('control.vignetteRadius') }}</span>
-          <span class="control-value">{{ store.params.vignette.radius.toFixed(1) }}</span>
-        </div>
-        <input
-          type="range"
-          min="0.5"
-          max="2.0"
-          step="0.1"
-          :value="store.params.vignette.radius"
-          @input="store.params.vignette.radius = +($event.target as HTMLInputElement).value"
-        />
-      </div>
-      <div class="control-row">
-        <div class="control-header">
-          <span class="control-label">{{ $t('control.vignetteFeather') }}</span>
-          <span class="control-value">{{ store.params.vignette.feather }}</span>
-        </div>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          step="1"
-          :value="store.params.vignette.feather"
-          @input="store.params.vignette.feather = +($event.target as HTMLInputElement).value"
-        />
-      </div>
-      <div class="control-row">
-        <div class="control-header">
-          <span class="control-label">{{ $t('control.vignetteColor') }}</span>
-          <span class="control-value">{{ store.params.vignette.color }}</span>
-        </div>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          step="1"
-          :value="store.params.vignette.color"
-          @input="store.params.vignette.color = +($event.target as HTMLInputElement).value"
-        />
-      </div>
-    </div>
-  </div>
 
-  <!-- Light Leak -->
-  <div class="control-section">
-    <div class="section-header" @click="toggle('lightLeak')">
-      <span class="section-title">{{ $t('control.lightLeak') }}</span>
-      <span class="section-toggle" :class="{ open: sections.lightLeak }">▼</span>
-    </div>
-    <div v-show="sections.lightLeak" class="section-body">
-      <div class="control-row">
-        <div class="control-header">
-          <span class="control-label">{{ $t('control.lightLeakIntensity') }}</span>
-          <span class="control-value">{{ store.params.lightLeak.intensity }}</span>
+      <template v-if="advancedMode">
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.vignetteRadius') }}</span>
+            <span class="control-value">{{ store.params.vignette.radius.toFixed(1) }}</span>
+          </div>
+          <input
+            type="range" min="0.5" max="2.0" step="0.1"
+            :value="store.params.vignette.radius"
+            @input="store.params.vignette.radius = +($event.target as HTMLInputElement).value"
+          />
         </div>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          step="1"
-          :value="store.params.lightLeak.intensity"
-          @input="store.params.lightLeak.intensity = +($event.target as HTMLInputElement).value"
-        />
-      </div>
-      <div class="control-row">
-        <div class="control-header">
-          <span class="control-label">{{ $t('control.lightLeakColor') }}</span>
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.vignetteFeather') }}</span>
+            <span class="control-value">{{ store.params.vignette.feather }}</span>
+          </div>
+          <input
+            type="range" min="0" max="100" step="1"
+            :value="store.params.vignette.feather"
+            @input="store.params.vignette.feather = +($event.target as HTMLInputElement).value"
+          />
         </div>
-        <select
-          class="control-select"
-          :value="store.params.lightLeak.color"
-          @change="store.params.lightLeak.color = ($event.target as HTMLSelectElement).value as any"
-        >
-          <option v-for="opt in leakColorOptions" :key="opt.value" :value="opt.value">
-            {{ opt.label }}
-          </option>
-        </select>
-      </div>
-      <div class="control-row">
-        <div class="control-header">
-          <span class="control-label">{{ $t('control.lightLeakPosition') }}</span>
+        <div class="control-row">
+          <div class="control-header">
+            <span class="control-label">{{ $t('control.vignetteColor') }}</span>
+            <span class="control-value">{{ store.params.vignette.color }}</span>
+          </div>
+          <input
+            type="range" min="0" max="100" step="1"
+            :value="store.params.vignette.color"
+            @input="store.params.vignette.color = +($event.target as HTMLInputElement).value"
+          />
         </div>
-        <select
-          class="control-select"
-          :value="store.params.lightLeak.position"
-          @change="store.params.lightLeak.position = ($event.target as HTMLSelectElement).value as any"
-        >
-          <option v-for="opt in leakPositionOptions" :key="opt.value" :value="opt.value">
-            {{ opt.label }}
-          </option>
-        </select>
-      </div>
+      </template>
     </div>
   </div>
 
@@ -366,10 +363,7 @@ const halationColorOptions = computed(() => [
           <span class="control-value">{{ store.params.fade.intensity }}</span>
         </div>
         <input
-          type="range"
-          min="0"
-          max="100"
-          step="1"
+          type="range" min="0" max="100" step="1"
           :value="store.params.fade.intensity"
           @input="store.params.fade.intensity = +($event.target as HTMLInputElement).value"
         />
@@ -377,45 +371,64 @@ const halationColorOptions = computed(() => [
     </div>
   </div>
 
-  <!-- Tone Curve -->
-  <div class="control-section">
+  <!-- Tone Curve (advanced only) -->
+  <div v-if="advancedMode" class="control-section">
     <div class="section-header" @click="toggle('toneCurve')">
       <span class="section-title">{{ $t('control.toneCurve') }}</span>
       <span class="section-toggle" :class="{ open: sections.toneCurve }">▼</span>
     </div>
     <div v-show="sections.toneCurve" class="section-body">
+      <ToneCurveEditor />
+    </div>
+  </div>
+
+  <!-- Light Leak (advanced only) -->
+  <div v-if="advancedMode" class="control-section">
+    <div class="section-header" @click="toggle('lightLeak')">
+      <span class="section-title">{{ $t('control.lightLeak') }}</span>
+      <span class="section-toggle" :class="{ open: sections.lightLeak }">▼</span>
+    </div>
+    <div v-show="sections.lightLeak" class="section-body">
       <div class="control-row">
         <div class="control-header">
-          <span class="control-label">{{ $t('control.toneCurveShadows') }}</span>
-          <span class="control-value">{{ formatValue(store.params.toneCurve.shadows) }}</span>
+          <span class="control-label">{{ $t('control.lightLeakIntensity') }}</span>
+          <span class="control-value">{{ store.params.lightLeak.intensity }}</span>
         </div>
-        <input type="range" min="-50" max="50" step="1"
-          :value="store.params.toneCurve.shadows"
-          @input="store.params.toneCurve.shadows = +($event.target as HTMLInputElement).value" />
+        <input
+          type="range" min="0" max="100" step="1"
+          :value="store.params.lightLeak.intensity"
+          @input="store.params.lightLeak.intensity = +($event.target as HTMLInputElement).value"
+        />
       </div>
       <div class="control-row">
         <div class="control-header">
-          <span class="control-label">{{ $t('control.toneCurveMidtones') }}</span>
-          <span class="control-value">{{ formatValue(store.params.toneCurve.midtones) }}</span>
+          <span class="control-label">{{ $t('control.lightLeakColor') }}</span>
         </div>
-        <input type="range" min="-50" max="50" step="1"
-          :value="store.params.toneCurve.midtones"
-          @input="store.params.toneCurve.midtones = +($event.target as HTMLInputElement).value" />
+        <select
+          class="control-select"
+          :value="store.params.lightLeak.color"
+          @change="store.params.lightLeak.color = ($event.target as HTMLSelectElement).value as any"
+        >
+          <option v-for="opt in leakColorOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+        </select>
       </div>
       <div class="control-row">
         <div class="control-header">
-          <span class="control-label">{{ $t('control.toneCurveHighlights') }}</span>
-          <span class="control-value">{{ formatValue(store.params.toneCurve.highlights) }}</span>
+          <span class="control-label">{{ $t('control.lightLeakPosition') }}</span>
         </div>
-        <input type="range" min="-50" max="50" step="1"
-          :value="store.params.toneCurve.highlights"
-          @input="store.params.toneCurve.highlights = +($event.target as HTMLInputElement).value" />
+        <select
+          class="control-select"
+          :value="store.params.lightLeak.position"
+          @change="store.params.lightLeak.position = ($event.target as HTMLSelectElement).value as any"
+        >
+          <option v-for="opt in leakPositionOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+        </select>
       </div>
     </div>
   </div>
 
-  <!-- Halation -->
-  <div class="control-section">
+  <!-- Halation (advanced only) -->
+  <div v-if="advancedMode" class="control-section">
     <div class="section-header" @click="toggle('halation')">
       <span class="section-title">{{ $t('control.halation') }}</span>
       <span class="section-toggle" :class="{ open: sections.halation }">▼</span>
@@ -452,8 +465,8 @@ const halationColorOptions = computed(() => [
     </div>
   </div>
 
-  <!-- Bloom -->
-  <div class="control-section">
+  <!-- Bloom (advanced only) -->
+  <div v-if="advancedMode" class="control-section">
     <div class="section-header" @click="toggle('bloom')">
       <span class="section-title">{{ $t('control.bloom') }}</span>
       <span class="section-toggle" :class="{ open: sections.bloom }">▼</span>
@@ -494,3 +507,67 @@ const halationColorOptions = computed(() => [
     <button class="btn btn-sm btn-block" @click="store.resetToPreset()">{{ $t('control.resetToPreset') }}</button>
   </div>
 </template>
+
+<style scoped>
+/* ── Mode toggle ───────────────────────────────────────────── */
+.mode-toggle {
+  display: flex;
+  margin: 10px 12px 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 5px 0;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-family: var(--font-family);
+  font-weight: 450;
+  cursor: pointer;
+  transition: all var(--transition);
+  letter-spacing: 0.03em;
+}
+
+.mode-btn:first-child {
+  border-right: 1px solid var(--border);
+}
+
+.mode-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.mode-btn.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-weight: 550;
+}
+
+/* ── Color toning subsection ────────────────────────────────── */
+.subsection-header {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 10px 0 8px;
+}
+
+.wheels-row {
+  display: flex;
+  gap: 4px;
+  justify-content: space-between;
+}
+
+.wheels-hint {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 5px;
+  letter-spacing: 0.01em;
+}
+</style>
