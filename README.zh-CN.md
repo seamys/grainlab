@@ -4,7 +4,7 @@
 
 **胶片摄影效果模拟器**
 
-[![版本](https://img.shields.io/badge/版本-2.0.0-blue.svg)](https://github.com/seamys/grainlab)
+[![版本](https://img.shields.io/badge/版本-2.2.0-blue.svg)](https://github.com/seamys/grainlab)
 [![许可证：MIT](https://img.shields.io/badge/许可证-MIT-green.svg)](LICENSE)
 [![在线演示](https://img.shields.io/badge/演示-在线体验-brightgreen.svg)](https://seamys.github.io/grainlab/)
 

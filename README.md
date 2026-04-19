@@ -4,7 +4,7 @@
 
 **Film Photography Effect Simulator**
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/seamys/grainlab)
+[![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)](https://github.com/seamys/grainlab)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/demo-online-brightgreen.svg)](https://seamys.github.io/grainlab/)
 
