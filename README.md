@@ -4,11 +4,11 @@
 
 **Film Photography Effect Simulator**
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/silvesterhai-design/grainlab)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/seamys/grainlab)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Live Demo](https://img.shields.io/badge/demo-online-brightgreen.svg)](https://silvesterhai-design.github.io/grainlab/)
+[![Live Demo](https://img.shields.io/badge/demo-online-brightgreen.svg)](https://seamys.github.io/grainlab/)
 
-**[🌐 Live Demo](https://silvesterhai-design.github.io/grainlab/) · [中文文档](README.zh-CN.md)**
+**[🌐 Live Demo](https://seamys.github.io/grainlab/) · [中文文档](README.zh-CN.md)**
 
 Give your digital photos the authentic look and feel of classic analog film — right in your browser. No installation, no account, completely free.
 
@@ -38,7 +38,7 @@ Give your digital photos the authentic look and feel of classic analog film — 
 
 Open the live app — no installation needed:
 
-**[https://silvesterhai-design.github.io/grainlab/](https://silvesterhai-design.github.io/grainlab/)**
+**[https://seamys.github.io/grainlab/](https://seamys.github.io/grainlab/)**
 
 ---
 

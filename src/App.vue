@@ -129,7 +129,7 @@ function handleKeydown(e: KeyboardEvent) {
         <!-- GitHub source link -->
         <a
           class="btn icon-btn"
-          href="https://github.com/silvesterhai-design/grainlab"
+          href="https://github.com/seamys/grainlab"
           target="_blank"
           rel="noopener noreferrer"
           title="View source on GitHub"

@@ -4,11 +4,11 @@
 
 **胶片摄影效果模拟器**
 
-[![版本](https://img.shields.io/badge/版本-2.0.0-blue.svg)](https://github.com/silvesterhai-design/grainlab)
+[![版本](https://img.shields.io/badge/版本-2.0.0-blue.svg)](https://github.com/seamys/grainlab)
 [![许可证：MIT](https://img.shields.io/badge/许可证-MIT-green.svg)](LICENSE)
-[![在线演示](https://img.shields.io/badge/演示-在线体验-brightgreen.svg)](https://silvesterhai-design.github.io/grainlab/)
+[![在线演示](https://img.shields.io/badge/演示-在线体验-brightgreen.svg)](https://seamys.github.io/grainlab/)
 
-**[🌐 在线体验](https://silvesterhai-design.github.io/grainlab/) · [English](README.md)**
+**[🌐 在线体验](https://seamys.github.io/grainlab/) · [English](README.md)**
 
 在浏览器中，为你的数码照片赋予经典模拟胶片的质感与色调。无需安装，无需注册，完全免费。
 
@@ -38,7 +38,7 @@
 
 打开在线应用，无需任何安装：
 
-**[https://silvesterhai-design.github.io/grainlab/](https://silvesterhai-design.github.io/grainlab/)**
+**[https://seamys.github.io/grainlab/](https://seamys.github.io/grainlab/)**
 
 ---
 

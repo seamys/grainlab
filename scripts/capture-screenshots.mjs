@@ -14,7 +14,7 @@ const OUT_DIR = join(__dirname, '..', 'docs', 'images');
 mkdirSync(OUT_DIR, { recursive: true });
 
 // Try live site first; fallback to local dev server
-const BASE_URL = process.env.SCREENSHOT_URL || 'https://silvesterhai-design.github.io/grainlab';
+const BASE_URL = process.env.SCREENSHOT_URL || 'https://seamys.github.io/grainlab';
 
 async function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
