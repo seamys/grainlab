@@ -171,7 +171,7 @@ function handleKeydown(e: KeyboardEvent) {
           <ControlPanel />
         </div>
         <footer class="sidebar-copyright">
-          © {{ new Date().getFullYear() }} GrainLab
+          © {{ new Date().getFullYear() }} GrainLab · Made by <a href="https://github.com/seamys" target="_blank" rel="noopener noreferrer" class="copyright-link">Flying Pizza</a>
         </footer>
       </aside>
     </main>

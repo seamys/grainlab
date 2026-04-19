@@ -232,6 +232,16 @@ body {
   letter-spacing: 0.02em;
 }
 
+.copyright-link {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.copyright-link:hover {
+  color: var(--text-secondary);
+  text-decoration: underline;
+}
+
 .sidebar-footer {
   display: flex;
   gap: 8px;
