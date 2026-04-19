@@ -158,6 +158,15 @@ body {
   margin: 0 4px;
 }
 
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 5px 7px;
+}
+
 .lang-select {
   appearance: none;
   background: transparent;
