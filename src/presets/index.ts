@@ -38,7 +38,7 @@ export const presets: FilmPreset[] = [
         shadowR: 25, shadowG: 15, shadowB: -10,
         highlightR: 10, highlightG: 5, highlightB: -5,
       },
-      grain: { intensity: 40, size: 1.5, colorVariance: 25, shadowBoost: 35, highlightReduction: 30 },
+      grain: { intensity: 18, size: 1.2, colorVariance: 15, shadowBoost: 25, highlightReduction: 35 },
       vignette: { intensity: 30, radius: 1.1, feather: 50, color: 0 },
       lightLeak: { intensity: 15, color: 'warm', position: 'top-left' },
       fade: { intensity: 10 },
