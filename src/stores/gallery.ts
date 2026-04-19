@@ -24,11 +24,23 @@ export const useGalleryStore = defineStore('gallery', () => {
       const img = new Image()
       img.onload = () => {
         const W = 72
-        const H = Math.round((img.height / img.width) * W)
+        const H = 52
         const canvas = document.createElement('canvas')
         canvas.width = W
         canvas.height = H
-        canvas.getContext('2d')!.drawImage(img, 0, 0, W, H)
+        const ctx = canvas.getContext('2d')!
+        // Cover crop: scale to fill, center
+        const srcAspect = img.width / img.height
+        const dstAspect = W / H
+        let sx = 0, sy = 0, sw = img.width, sh = img.height
+        if (srcAspect > dstAspect) {
+          sw = img.height * dstAspect
+          sx = (img.width - sw) / 2
+        } else {
+          sh = img.width / dstAspect
+          sy = (img.height - sh) / 2
+        }
+        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, W, H)
         URL.revokeObjectURL(url)
         resolve(canvas.toDataURL('image/jpeg', 0.75))
       }

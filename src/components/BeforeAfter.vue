@@ -140,10 +140,10 @@ function updatePosition(e: MouseEvent) {
       <!-- Before (original) – full canvas visible -->
       <canvas ref="beforeCanvas" class="ba-canvas" />
 
-      <!-- After (processed) – clipped to left portion -->
+      <!-- After (processed) – clipped to right portion -->
       <div
         class="ba-after-wrap"
-        :style="{ clipPath: `inset(0 ${100 - position}% 0 0)` }"
+        :style="{ clipPath: `inset(0 0 0 ${position}%)` }"
       >
         <canvas ref="afterCanvas" class="ba-canvas" />
       </div>
