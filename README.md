@@ -26,8 +26,8 @@ Give your digital photos the authentic look and feel of classic analog film — 
 |---------|-------------|
 | 🎞️ **11 Film Presets** | One-click simulation of iconic film stocks (Kodak Portra, Fuji Velvia, CineStill 800T, and more) |
 | 🎛️ **8 Adjustable Effects** | Grain, color grading, vignette, light leak, fade, halation, bloom, tone curve |
-| � **Text Watermark** | Customizable text watermark burned into exports — multi-line, font style, weight, family, position, opacity |
-| �🖼️ **Before / After** | Draggable split-view comparison at any time |
+| 🔏 **Text Watermark** | Customizable text watermark burned into exports — multi-line, font style, weight, family, position, opacity |
+| 🖼️ **Before / After** | Draggable split-view comparison at any time |
 | 📦 **Batch Export** | Apply a preset to multiple images and download as a ZIP |
 | 💾 **Gallery Persistence** | IndexedDB automatically saves your work across browser sessions |
 | 🌍 **9 Languages** | EN / 简中 / 繁中 / 日 / 한 / FR / DE / ES / PT |
@@ -201,7 +201,7 @@ npm run preview  # preview production build
 
 ---
 
-## � Changelog
+## 📋 Changelog
 
 ### v2.3.0 — 2026-04-19
 
@@ -219,6 +219,6 @@ npm run preview  # preview production build
 
 ---
 
-## �📄 License
+## 📄 License
 
 [MIT](LICENSE) © GrainLab
