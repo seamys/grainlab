@@ -198,7 +198,7 @@ function fmtVal(v: number) {
 
 .curve-svg {
   width: 100%;
-  height: 150px;
+  aspect-ratio: 256 / 200;
   display: block;
   cursor: crosshair;
   border-radius: var(--radius);
