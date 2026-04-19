@@ -106,21 +106,23 @@ function loadImg(src: string): Promise<HTMLImageElement> {
   })
 }
 
-function onMouseDown(e: MouseEvent) {
+function onPointerDown(e: PointerEvent) {
   isDragging = true
+  ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
   updatePosition(e)
 }
 
-function onMouseMove(e: MouseEvent) {
+function onPointerMove(e: PointerEvent) {
   if (!isDragging) return
   updatePosition(e)
 }
 
-function onMouseUp() {
+function onPointerUp(e: PointerEvent) {
   isDragging = false
+  ;(e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId)
 }
 
-function updatePosition(e: MouseEvent) {
+function updatePosition(e: PointerEvent) {
   const wrap = containerRef.value?.querySelector('.ba-canvas-wrap') as HTMLElement | null
   if (!wrap) return
   const rect = wrap.getBoundingClientRect()
@@ -133,10 +135,10 @@ function updatePosition(e: MouseEvent) {
   <div
     ref="containerRef"
     class="before-after"
-    @mousedown="onMouseDown"
-    @mousemove="onMouseMove"
-    @mouseup="onMouseUp"
-    @mouseleave="onMouseUp"
+    @pointerdown="onPointerDown"
+    @pointermove="onPointerMove"
+    @pointerup="onPointerUp"
+    @pointercancel="onPointerUp"
   >
     <div class="ba-canvas-wrap">
       <!-- Before (original) – full canvas visible -->

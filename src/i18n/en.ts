@@ -110,4 +110,8 @@ export default {
   lang: {
     toggle: '中 / EN',
   },
+  panel: {
+    presets: 'Presets',
+    adjust: 'Adjust',
+  },
 }

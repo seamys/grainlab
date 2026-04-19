@@ -110,4 +110,8 @@ export default {
   lang: {
     toggle: '語言',
   },
+  panel: {
+    presets: '預設',
+    adjust: '調整',
+  },
 }

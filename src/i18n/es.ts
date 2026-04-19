@@ -110,4 +110,8 @@ export default {
   lang: {
     toggle: 'Idioma',
   },
+  panel: {
+    presets: 'Preajustes',
+    adjust: 'Ajustar',
+  },
 }
