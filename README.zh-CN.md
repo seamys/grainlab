@@ -4,7 +4,7 @@
 
 **胶片摄影效果模拟器**
 
-[![版本](https://img.shields.io/badge/版本-2.2.0-blue.svg)](https://github.com/seamys/grainlab)
+[![版本](https://img.shields.io/badge/版本-2.3.0-blue.svg)](https://github.com/seamys/grainlab)
 [![许可证：MIT](https://img.shields.io/badge/许可证-MIT-green.svg)](LICENSE)
 [![在线演示](https://img.shields.io/badge/演示-在线体验-brightgreen.svg)](https://seamys.github.io/grainlab/)
 
@@ -197,6 +197,24 @@ npm run preview  # 预览生产构建
 
 ---
 
-## 📄 开源许可
+## � 更新日志
+
+### v2.3.0 — 2026-04-19
+
+- **新功能：文字水印** — 为照片添加自定义文字水印
+  - 支持多行文本（按 Enter 换行）
+  - 5 种位置：左上 / 右上 / 左下 / 右下 / 居中
+  - 颜色（白色/黑色）、不透明度（10–100%）、大小（10–100）
+  - 字体样式：字重（加粗/常规）、字形（正常/斜体）、字体（无袅线体/袅线体/等宽体）
+  - 画布实时预览（所见即所得）；导出时永久烧录至图片
+  - 水印设置独立存储，切换预设不会重置水印
+
+### v2.2.0
+
+- 初始公开发布
+
+---
+
+## �📄 开源许可
 
 [MIT](LICENSE) © GrainLab

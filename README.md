@@ -4,7 +4,7 @@
 
 **Film Photography Effect Simulator**
 
-[![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)](https://github.com/seamys/grainlab)
+[![Version](https://img.shields.io/badge/version-2.3.0-blue.svg)](https://github.com/seamys/grainlab)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/demo-online-brightgreen.svg)](https://seamys.github.io/grainlab/)
 
@@ -201,6 +201,24 @@ npm run preview  # preview production build
 
 ---
 
-## 📄 License
+## � Changelog
+
+### v2.3.0 — 2026-04-19
+
+- **New: Text Watermark** — add customizable text watermarks to your photos
+  - Multi-line text support (press Enter for new lines)
+  - 5 positions: top-left · top-right · bottom-left · bottom-right · center
+  - Color (white / black), opacity (10–100%), size (10–100)
+  - Font controls: weight (bold / normal), style (normal / italic), family (sans-serif / serif / monospace)
+  - Live WYSIWYG preview on canvas; burned into single and batch exports
+  - Settings persist independently — never overwritten by preset changes
+
+### v2.2.0
+
+- Initial public release
+
+---
+
+## �📄 License
 
 [MIT](LICENSE) © GrainLab
