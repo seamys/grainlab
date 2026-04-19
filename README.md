@@ -18,6 +18,10 @@ Give your digital photos the authentic look and feel of classic analog film — 
 
 ![GrainLab main interface](docs/images/main.png)
 
+### 🎬 Demo
+
+![GrainLab Demo](docs/demo.gif)
+
 ---
 
 ## ✨ Features at a Glance
