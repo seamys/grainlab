@@ -17,6 +17,12 @@ export default {
     fujiSuperia400: { name: 'Superia 400', desc: '상쾌한 녹색 색조, 균형 잡힌 따뜻함, 우수한 피부색 재현' },
     fujiC200: { name: 'C200', desc: '연한 쿨톤, 낮은 대비, 일본풍 청량 스타일' },
     ilfordHP5: { name: 'HP5 흑백', desc: '클래식 흑백 필름, 높은 대비, 풍부한 입자감' },
+    kodakEktar100: { name: 'Ektar 100', desc: '초고채도 풍경 필름, 초미세 입자, 선명한 색상' },
+    fujiVelvia50: { name: 'Velvia 50', desc: '반전 필름, 극도로 높은 채도, 깊은 파랑과 초록, 드라마틱한 대비' },
+    cinestill800t: { name: 'CineStill 800T', desc: '영화 필름, 텅스텐 색온도, 차가운 그림자, 특유의 붉은 할레이션' },
+    kodakTriX400: { name: 'Tri-X 400', desc: '보도사진의 대명사 흑백 필름, 강한 대비, 거친 입자감' },
+    agfaVista200: { name: 'Agfa Vista 200', desc: '따뜻한 빈티지 느낌, 자연스러운 페이드, 마젠타 그림자' },
+    fujiEterna500: { name: 'Eterna 500', desc: '영화 네거티브 필름, 낮은 채도, 풍부한 그림자, 시네마틱한 느낌' },
   },
   control: {
     colorGrade: '색상 그레이딩',

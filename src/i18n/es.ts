@@ -17,6 +17,12 @@ export default {
     fujiSuperia400: { name: 'Superia 400', desc: 'Tonos verdes frescos, equilibrio cálido-frío, excelente reproducción de tonos de piel' },
     fujiC200: { name: 'C200', desc: 'Tonos fríos suaves, bajo contraste, estilo japonés fresco' },
     ilfordHP5: { name: 'HP5 B/N', desc: 'Película clásica en blanco y negro, alto contraste, grano rico' },
+    kodakEktar100: { name: 'Ektar 100', desc: 'Película de paisaje ultra vívida, grano extra fino, colores saturados' },
+    fujiVelvia50: { name: 'Velvia 50', desc: 'Diapositiva hipersaturada, azules y verdes profundos, alto contraste' },
+    cinestill800t: { name: 'CineStill 800T', desc: 'Película de cine tungsteno, sombras frías, halo rojo característico' },
+    kodakTriX400: { name: 'Tri-X 400', desc: 'Película B/N icónica del fotoperiodismo, alto contraste, grano grueso' },
+    agfaVista200: { name: 'Agfa Vista 200', desc: 'Tonos cálidos vintage, desvanecimiento natural, sombras magenta nostálgicas' },
+    fujiEterna500: { name: 'Eterna 500', desc: 'Negativo de cine, tonos apagados, sombras ricas, aspecto cinematográfico' },
   },
   control: {
     colorGrade: 'Gradación de color',

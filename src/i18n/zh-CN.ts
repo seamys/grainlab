@@ -17,6 +17,12 @@ export default {
     fujiSuperia400: { name: 'Superia 400', desc: '清新绿调，冷暖平衡，出色的肤色还原' },
     fujiC200: { name: 'C200', desc: '清淡冷调，低对比度，日系清新风格' },
     ilfordHP5: { name: 'HP5 黑白', desc: '经典黑白胶片，高对比度，浓郁颗粒感' },
+    kodakEktar100: { name: 'Ektar 100', desc: '超高饱和度风景胶片，极细颗粒，鲜艳色彩' },
+    fujiVelvia50: { name: 'Velvia 50', desc: '反转片，极致饱和，深邃蓝绿，高对比戏剧感' },
+    cinestill800t: { name: 'CineStill 800T', desc: '电影胶片，钨丝灯色调，蓝冷阴影，标志性红色光晕' },
+    kodakTriX400: { name: 'Tri-X 400', desc: '经典新闻黑白胶片，高对比，粗糙颗粒，戏剧张力' },
+    agfaVista200: { name: 'Agfa Vista 200', desc: '温暖复古，自然褪色，偏品红阴影，胶片怀旧感' },
+    fujiEterna500: { name: 'Eterna 500', desc: '电影负片，低饱和，暗部细腻，高光柔和，电影感十足' },
   },
   control: {
     colorGrade: '色调调整',

@@ -17,6 +17,12 @@ export default {
     fujiSuperia400: { name: 'Superia 400', desc: '爽やかなグリーンカラー、バランスの取れた色調、優れた肌色再現' },
     fujiC200: { name: 'C200', desc: '淡いクールトーン、低コントラスト、日本風フレッシュスタイル' },
     ilfordHP5: { name: 'HP5 モノクロ', desc: 'クラシックな白黒フィルム、高コントラスト、豊かな粒状感' },
+    kodakEktar100: { name: 'Ektar 100', desc: '超高彩度風景フィルム、超微粒子、鮮やかな色彩' },
+    fujiVelvia50: { name: 'Velvia 50', desc: 'リバーサルフィルム、超高彩度、深い青緑、ドラマチックな高コントラスト' },
+    cinestill800t: { name: 'CineStill 800T', desc: '映画フィルム、タングステン色温度、クールシャドウ、赤いハレーション' },
+    kodakTriX400: { name: 'Tri-X 400', desc: '報道写真の定番モノクロフィルム、高コントラスト、荒い粒状感' },
+    agfaVista200: { name: 'Agfa Vista 200', desc: '暖かいヴィンテージ、自然なフェード、マゼンタシャドウ、懐かしい雰囲気' },
+    fujiEterna500: { name: 'Eterna 500', desc: '映画ネガフィルム、落ち着いたトーン、豊かなシャドウ、シネマティックな質感' },
   },
   control: {
     colorGrade: 'カラーグレーディング',
