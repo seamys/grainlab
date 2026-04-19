@@ -10,13 +10,21 @@ const store = useEditorStore()
 const format = ref<'jpeg' | 'png'>('jpeg')
 const quality = ref(92)
 const exporting = ref(false)
+const progress = ref(0)
 
 async function doExport() {
   if (!store.originalBase64) return
 
   exporting.value = true
+  progress.value = 0
   try {
-    const data = await exportImage(store.originalBase64, store.params, format.value, quality.value)
+    const data = await exportImage(
+      store.originalBase64,
+      store.params,
+      format.value,
+      quality.value,
+      (pct) => { progress.value = pct }
+    )
 
     const ext = format.value === 'jpeg' ? 'jpg' : 'png'
     const baseName = store.fileName.replace(/\.[^.]+$/, '')
@@ -27,6 +35,7 @@ async function doExport() {
     emit('close')
   } finally {
     exporting.value = false
+    progress.value = 0
   }
 }
 </script>
@@ -53,11 +62,32 @@ async function doExport() {
       </div>
 
       <div class="modal-actions">
-        <button class="btn" @click="emit('close')">{{ $t('export.cancel') }}</button>
+        <button class="btn" :disabled="exporting" @click="emit('close')">{{ $t('export.cancel') }}</button>
         <button class="btn btn-primary" :disabled="exporting" @click="doExport">
           {{ exporting ? $t('export.exporting') : $t('export.exportBtn') }}
         </button>
       </div>
+
+      <div v-if="exporting" class="export-progress">
+        <div class="export-progress-bar" :style="{ width: progress + '%' }" />
+      </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.export-progress {
+  margin-top: 12px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.export-progress-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.2s ease;
+}
+</style>

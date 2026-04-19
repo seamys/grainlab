@@ -45,27 +45,54 @@ function loadImageFromBase64(base64: string): Promise<HTMLImageElement> {
 
 /**
  * Export a full-resolution image with filters applied.
+ * Processing is offloaded to a Web Worker to avoid blocking the main thread.
  * Used for single export and batch processing.
  */
 export async function exportImage(
   base64: string,
   params: FilterParams,
   format: 'jpeg' | 'png',
-  quality: number
+  quality: number,
+  onProgress?: (pct: number) => void
 ): Promise<Uint8Array> {
+  onProgress?.(5)
   const img = await loadImageFromBase64(base64)
+  onProgress?.(15)
+
   const canvas = new OffscreenCanvas(img.width, img.height)
   const ctx = canvas.getContext('2d')!
   ctx.drawImage(img, 0, 0)
 
   const imageData = ctx.getImageData(0, 0, img.width, img.height)
-  const processed = applyFilters(imageData, params)
+  onProgress?.(25)
+
+  // Offload heavy filter work to a Web Worker (zero-copy transfer)
+  const processedBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+    const worker = new Worker(new URL('./filter.worker.ts', import.meta.url), { type: 'module' })
+    worker.onmessage = (e: MessageEvent<{ buffer: ArrayBuffer }>) => {
+      resolve(e.data.buffer)
+      worker.terminate()
+    }
+    worker.onerror = (e) => {
+      reject(new Error(e.message))
+      worker.terminate()
+    }
+    worker.postMessage(
+      { buffer: imageData.data.buffer, width: img.width, height: img.height, params: JSON.parse(JSON.stringify(params)) },
+      [imageData.data.buffer]
+    )
+  })
+  onProgress?.(85)
+
+  const processed = new ImageData(new Uint8ClampedArray(processedBuffer), img.width, img.height)
   ctx.putImageData(processed, 0, 0)
+  onProgress?.(90)
 
   const blob = await canvas.convertToBlob({
     type: `image/${format}`,
     quality: format === 'jpeg' ? quality / 100 : undefined,
   })
+  onProgress?.(100)
 
   const buffer = await blob.arrayBuffer()
   return new Uint8Array(buffer)

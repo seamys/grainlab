@@ -25,15 +25,21 @@ onMounted(async () => {
   isDark.value = saved ? saved === 'dark' : prefersDark
   applyTheme(isDark.value)
 
-  // Load default example image
-  try {
-    const res = await fetch('./examples/example.jpg')
-    const blob = await res.blob()
-    const file = new File([blob], 'example.jpg', { type: 'image/jpeg' })
-    await gallery.addFiles([file])
-  } catch {
-    // silently ignore if example image is not available
+  // Restore gallery from IndexedDB; only load example if DB was empty
+  const restored = await gallery.restoreFromDB()
+  if (!restored) {
+    try {
+      const res = await fetch('./examples/example.jpg')
+      const blob = await res.blob()
+      const file = new File([blob], 'example.jpg', { type: 'image/jpeg' })
+      await gallery.addFiles([file])
+    } catch {
+      // silently ignore if example image is not available
+    }
   }
+
+  // Start watching editor params to persist changes to IndexedDB
+  gallery.startParamsWatch()
 })
 import ImageCanvas from './components/ImageCanvas.vue'
 import PresetPanel from './components/PresetPanel.vue'

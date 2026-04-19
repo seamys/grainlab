@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, reactive, onBeforeUnmount } from 'vue'
+import { ref, watch, reactive, onMounted, onBeforeUnmount } from 'vue'
 import { useEditorStore } from '../stores/editor'
 import { useGalleryStore } from '../stores/gallery'
 import FilterWorker from '../filters/filter.worker?worker'
@@ -129,6 +129,15 @@ watch(
     dispatchRender()
   }
 )
+
+// When switching back from BeforeAfter, the image is already loaded but
+// originalBase64 hasn't changed, so re-render on mount.
+onMounted(async () => {
+  if (store.originalBase64 && !originalImageData) {
+    await loadImage(store.originalBase64)
+    dispatchRender()
+  }
+})
 
 watch(
   () => store.params,

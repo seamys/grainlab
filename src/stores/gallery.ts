@@ -1,9 +1,12 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import type { FilterParams } from '../filters/types'
 import { cloneParams, presets } from '../presets'
 import { readFileAsBase64 } from '../utils/fileApi'
 import { useEditorStore } from './editor'
+import { dbSaveItem, dbDeleteItem, dbLoadAll, dbUpdateParams } from '../utils/galleryDb'
+
+const ACTIVE_KEY = 'grainlab_active'
 
 export interface GalleryItem {
   id: string
@@ -59,12 +62,30 @@ export const useGalleryStore = defineStore('gallery', () => {
     for (const file of files) {
       const id = `${Date.now()}_${Math.random().toString(36).slice(2)}`
       const thumbUrl = await generateThumb(file)
+      const defaultParams = cloneParams(presets[0].params)
+      const defaultPresetId = presets[0].id
+      const order = items.value.length
+
       items.value.push({
         id,
         file,
         thumbUrl,
-        params: cloneParams(presets[0].params),
-        presetId: presets[0].id,
+        params: defaultParams,
+        presetId: defaultPresetId,
+      })
+
+      // Persist to IndexedDB (don't await — keep UI responsive)
+      file.arrayBuffer().then((buffer) => {
+        dbSaveItem({
+          id,
+          name: file.name,
+          type: file.type,
+          buffer,
+          thumbUrl,
+          params: defaultParams,
+          presetId: defaultPresetId,
+          order,
+        })
       })
     }
 
@@ -81,11 +102,14 @@ export const useGalleryStore = defineStore('gallery', () => {
 
     // Save current item's params before switching
     if (activeIndex.value >= 0 && activeIndex.value < items.value.length) {
-      items.value[activeIndex.value].params = cloneParams(editorStore.params)
-      items.value[activeIndex.value].presetId = editorStore.currentPresetId
+      const prev = items.value[activeIndex.value]
+      prev.params = cloneParams(editorStore.params)
+      prev.presetId = editorStore.currentPresetId
+      dbUpdateParams(prev.id, prev.params, prev.presetId)
     }
 
     activeIndex.value = index
+    localStorage.setItem(ACTIVE_KEY, String(index))
     const item = items.value[index]
 
     const base64 = await readFileAsBase64(item.file)
@@ -95,10 +119,12 @@ export const useGalleryStore = defineStore('gallery', () => {
   }
 
   function removeItem(index: number) {
+    dbDeleteItem(items.value[index].id)
     items.value.splice(index, 1)
 
     if (items.value.length === 0) {
       activeIndex.value = -1
+      localStorage.removeItem(ACTIVE_KEY)
       useEditorStore().clearImage()
       return
     }
@@ -108,8 +134,53 @@ export const useGalleryStore = defineStore('gallery', () => {
       setActive(newActive)
     } else if (activeIndex.value > index) {
       activeIndex.value--
+      localStorage.setItem(ACTIVE_KEY, String(activeIndex.value))
     }
   }
 
-  return { items, activeIndex, addFiles, setActive, removeItem }
+  // Debounced watcher: persist active item's params whenever the user adjusts sliders
+  // This ensures params are saved even without switching images.
+  let paramsSyncTimer: ReturnType<typeof setTimeout> | null = null
+  function schedulePersistParams() {
+    if (paramsSyncTimer) clearTimeout(paramsSyncTimer)
+    paramsSyncTimer = setTimeout(() => {
+      if (activeIndex.value < 0 || activeIndex.value >= items.value.length) return
+      const editorStore = useEditorStore()
+      const item = items.value[activeIndex.value]
+      item.params = cloneParams(editorStore.params)
+      item.presetId = editorStore.currentPresetId
+      dbUpdateParams(item.id, item.params, item.presetId)
+    }, 300)
+  }
+
+  // Start watching after store is ready (called from App.vue once gallery is initialized)
+  function startParamsWatch() {
+    const editorStore = useEditorStore()
+    watch(() => editorStore.params, schedulePersistParams, { deep: true })
+    watch(() => editorStore.currentPresetId, schedulePersistParams)
+  }
+
+  /**
+   * Restore gallery from IndexedDB on app startup.
+   * Returns true if any items were restored, false if DB was empty.
+   */
+  async function restoreFromDB(): Promise<boolean> {
+    const records = await dbLoadAll()
+    if (records.length === 0) return false
+
+    items.value = records.map((rec) => ({
+      id: rec.id,
+      file: new File([rec.buffer], rec.name, { type: rec.type }),
+      thumbUrl: rec.thumbUrl,
+      params: rec.params,
+      presetId: rec.presetId,
+    }))
+
+    const savedActive = parseInt(localStorage.getItem(ACTIVE_KEY) ?? '0', 10)
+    const idx = Math.max(0, Math.min(savedActive, items.value.length - 1))
+    await setActive(idx)
+    return true
+  }
+
+  return { items, activeIndex, addFiles, setActive, removeItem, restoreFromDB, startParamsWatch }
 })

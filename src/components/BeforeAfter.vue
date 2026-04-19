@@ -60,9 +60,11 @@ async function loadAndRender(base64: string) {
 
   let w = img.width
   let h = img.height
-  if (w > 800) {
-    h = Math.round((h * 800) / w)
-    w = 800
+  const MAX = 800
+  if (w > MAX || h > MAX) {
+    const scale = Math.min(MAX / w, MAX / h)
+    w = Math.round(w * scale)
+    h = Math.round(h * scale)
   }
 
   const bc = beforeCanvas.value!
