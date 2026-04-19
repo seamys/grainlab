@@ -26,7 +26,7 @@ onMounted(async () => {
 
   // Load default example image
   try {
-    const res = await fetch('/examples/example.jpg')
+    const res = await fetch('./examples/example.jpg')
     const blob = await res.blob()
     const reader = new FileReader()
     reader.onload = () => {
