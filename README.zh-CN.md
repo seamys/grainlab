@@ -16,10 +16,6 @@
 
 ---
 
-![GrainLab 主界面](docs/images/main.png)
-
-### 🎬 演示视频
-
 ![GrainLab 演示](docs/demo.gif)
 
 ---
