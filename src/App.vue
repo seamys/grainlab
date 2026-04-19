@@ -2,7 +2,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEditorStore } from './stores/editor'
-import { pickImage } from './utils/fileApi'
+import { useGalleryStore } from './stores/gallery'
+import { pickMultipleImages } from './utils/fileApi'
 import { setLocale, LOCALES, type LocaleCode } from './i18n'
 
 // ===== Theme =====
@@ -28,11 +29,8 @@ onMounted(async () => {
   try {
     const res = await fetch('./examples/example.jpg')
     const blob = await res.blob()
-    const reader = new FileReader()
-    reader.onload = () => {
-      store.loadImage(reader.result as string, 'example.jpg', '')
-    }
-    reader.readAsDataURL(blob)
+    const file = new File([blob], 'example.jpg', { type: 'image/jpeg' })
+    await gallery.addFiles([file])
   } catch {
     // silently ignore if example image is not available
   }
@@ -43,6 +41,7 @@ import ControlPanel from './components/ControlPanel.vue'
 import ExportDialog from './components/ExportDialog.vue'
 import BatchPanel from './components/BatchPanel.vue'
 import BeforeAfter from './components/BeforeAfter.vue'
+import FilmStrip from './components/FilmStrip.vue'
 
 const { t, locale } = useI18n()
 const currentLocale = computed({
@@ -51,13 +50,15 @@ const currentLocale = computed({
 })
 
 const store = useEditorStore()
+const gallery = useGalleryStore()
 const showExport = ref(false)
 const showBatch = ref(false)
+const imageCanvasRef = ref<InstanceType<typeof ImageCanvas> | null>(null)
 
 async function openFile() {
-  const result = await pickImage()
-  if (result) {
-    store.loadImage(result.base64, result.name, '')
+  const files = await pickMultipleImages()
+  if (files.length > 0) {
+    await gallery.addFiles(files)
   }
 }
 
@@ -71,6 +72,19 @@ function handleKeydown(e: KeyboardEvent) {
       case 's':
         e.preventDefault()
         if (store.imageLoaded) showExport.value = true
+        break
+      case '=':
+      case '+':
+        e.preventDefault()
+        imageCanvasRef.value?.zoomIn()
+        break
+      case '-':
+        e.preventDefault()
+        imageCanvasRef.value?.zoomOut()
+        break
+      case '0':
+        e.preventDefault()
+        imageCanvasRef.value?.resetZoom()
         break
     }
   }
@@ -119,9 +133,10 @@ function handleKeydown(e: KeyboardEvent) {
     <!-- Workspace -->
     <main class="workspace">
       <!-- Preview area -->
-      <div class="preview-area">
+      <div class="preview-area" :class="{ 'has-filmstrip': gallery.items.length > 0 }">
         <BeforeAfter v-if="store.showBeforeAfter && store.imageLoaded" />
-        <ImageCanvas v-else />
+        <ImageCanvas v-else ref="imageCanvasRef" />
+        <FilmStrip />
         <transition name="status-fade">
           <div v-if="store.processing && store.imageLoaded" class="processing-indicator">
             <div class="processing-dot" />

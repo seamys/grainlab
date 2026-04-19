@@ -64,6 +64,29 @@ export const useEditorStore = defineStore('editor', () => {
     applyPreset(presets[0].id)
   }
 
+  function loadImageWithParams(base64: string, name: string, newParams: FilterParams, newPresetId: string) {
+    originalBase64.value = base64
+    fileName.value = name
+    filePath.value = ''
+    imageLoaded.value = true
+    currentPresetId.value = newPresetId
+    const cloned = cloneParams(newParams)
+    Object.assign(params.colorGrade, cloned.colorGrade)
+    Object.assign(params.grain, cloned.grain)
+    Object.assign(params.vignette, cloned.vignette)
+    Object.assign(params.lightLeak, cloned.lightLeak)
+    Object.assign(params.fade, cloned.fade)
+    Object.assign(params.halation, cloned.halation)
+    Object.assign(params.bloom, cloned.bloom)
+    Object.assign(params.toneCurve, cloned.toneCurve)
+  }
+
+  function clearImage() {
+    originalBase64.value = ''
+    fileName.value = ''
+    imageLoaded.value = false
+  }
+
   function applyPreset(presetId: string) {
     const preset = presets.find((p) => p.id === presetId)
     if (!preset) return
@@ -98,6 +121,8 @@ export const useEditorStore = defineStore('editor', () => {
     isExporting,
     processing,
     loadImage,
+    loadImageWithParams,
+    clearImage,
     applyPreset,
     resetToPreset,
     toggleBeforeAfter,
