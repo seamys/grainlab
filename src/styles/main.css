@@ -124,6 +124,13 @@ body {
   display: none;
 }
 
+.toolbar-tagline {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
 .toolbar-right {
   display: flex;
   align-items: center;

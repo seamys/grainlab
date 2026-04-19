@@ -104,15 +104,21 @@ function handleKeydown(e: KeyboardEvent) {
       <div class="toolbar-left">
         <span class="toolbar-title-icon"></span>
         <span class="toolbar-title">{{ t('app.title') }}</span>
+        <span class="toolbar-divider"></span>
+        <span class="toolbar-tagline">Film Photography Simulator</span>
       </div>
       <div class="toolbar-right">
-        <button class="btn" @click="openFile">{{ t('app.open') }}</button>
+        <button class="btn" @click="openFile">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:-1px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          {{ t('app.open') }}
+        </button>
         <button
           class="btn btn-toggle"
           :class="{ active: store.showBeforeAfter }"
           :disabled="!store.imageLoaded"
           @click="store.toggleBeforeAfter()"
         >
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:-1px"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
           {{ t('app.compare') }}
         </button>
         <button
@@ -120,9 +126,11 @@ function handleKeydown(e: KeyboardEvent) {
           :disabled="!store.imageLoaded"
           @click="showExport = true"
         >
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:-1px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           {{ t('app.export') }}
         </button>
         <button class="btn" :disabled="!store.imageLoaded" @click="showBatch = true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:-1px"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z"/></svg>
           {{ t('app.batch') }}
         </button>
         <span class="toolbar-divider"></span>
