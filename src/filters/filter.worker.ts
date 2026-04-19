@@ -163,10 +163,10 @@ const HALATION_COLORS: Record<string, { r: number; g: number; b: number }> = {
   gold: { r: 255, g: 200, b: 80 },
 }
 
-function applyHalation(data: Uint8ClampedArray, width: number, height: number, params: HalationParams): void {
+function applyHalation(data: Uint8ClampedArray, width: number, height: number, params: HalationParams, pixelScale = 1): void {
   if (!params || params.intensity <= 0) return
   const strength = params.intensity / 100
-  const r = Math.max(1, Math.min(20, Math.round(params.radius)))
+  const r = Math.max(1, Math.min(Math.round(20 * pixelScale), Math.round(params.radius * pixelScale)))
   const hc = HALATION_COLORS[params.color] ?? HALATION_COLORS.warm
   const bright = new Float32Array(width * height)
   for (let i = 0; i < data.length; i += 4) {
@@ -184,11 +184,11 @@ function applyHalation(data: Uint8ClampedArray, width: number, height: number, p
 }
 
 // ---- bloom ----
-function applyBloom(data: Uint8ClampedArray, width: number, height: number, params: BloomParams): void {
+function applyBloom(data: Uint8ClampedArray, width: number, height: number, params: BloomParams, pixelScale = 1): void {
   if (!params || params.intensity <= 0) return
   const strength = params.intensity / 100
   const threshold = (params.threshold / 100) * 255
-  const r = Math.max(1, Math.min(20, Math.round(params.radius)))
+  const r = Math.max(1, Math.min(Math.round(20 * pixelScale), Math.round(params.radius * pixelScale)))
   const bR = new Float32Array(width * height)
   const bG = new Float32Array(width * height)
   const bB = new Float32Array(width * height)
@@ -220,10 +220,10 @@ function seededRandom(x: number, y: number, seed: number): number {
   return (h & 0x7fffffff) / 0x7fffffff
 }
 
-function applyGrain(data: Uint8ClampedArray, width: number, height: number, params: GrainParams): void {
+function applyGrain(data: Uint8ClampedArray, width: number, height: number, params: GrainParams, pixelScale = 1): void {
   if (params.intensity <= 0) return
   const strength = (params.intensity / 100) * 60
-  const gs = Math.max(1, Math.round(params.size))
+  const gs = Math.max(1, Math.round(params.size * pixelScale))
   const colorVariance = (params.colorVariance ?? 0) / 100
   const shadowBoost = (params.shadowBoost ?? 0) / 100 * 1.5
   const highlightReduction = (params.highlightReduction ?? 0) / 100
@@ -339,11 +339,12 @@ function applyLightLeak(data: Uint8ClampedArray, width: number, height: number, 
 
 // ---- worker message handler ----
 self.onmessage = (e: MessageEvent) => {
-  const { buffer, width, height, params } = e.data as {
+  const { buffer, width, height, params, pixelScale = 1 } = e.data as {
     buffer: ArrayBuffer
     width: number
     height: number
     params: FilterParams
+    pixelScale?: number
   }
 
   const data = new Uint8ClampedArray(buffer)
@@ -352,9 +353,9 @@ self.onmessage = (e: MessageEvent) => {
   applyToneCurve(data, len, params.toneCurve)
   applyColorGrade(data, len, params.colorGrade)
   applyFade(data, len, params.fade)
-  applyHalation(data, width, height, params.halation)
-  applyBloom(data, width, height, params.bloom)
-  applyGrain(data, width, height, params.grain)
+  applyHalation(data, width, height, params.halation, pixelScale)
+  applyBloom(data, width, height, params.bloom, pixelScale)
+  applyGrain(data, width, height, params.grain, pixelScale)
   applyVignette(data, width, height, params.vignette)
   applyLightLeak(data, width, height, params.lightLeak)
 

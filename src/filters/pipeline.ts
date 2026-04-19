@@ -66,6 +66,10 @@ export async function exportImage(
   const imageData = ctx.getImageData(0, 0, img.width, img.height)
   onProgress?.(25)
 
+  // Scale pixel-radius effects (grain, halation, bloom) to match the 800px preview reference
+  const PREVIEW_MAX_WIDTH = 800
+  const pixelScale = img.width / Math.min(img.width, PREVIEW_MAX_WIDTH)
+
   // Offload heavy filter work to a Web Worker (zero-copy transfer)
   const processedBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
     const worker = new Worker(new URL('./filter.worker.ts', import.meta.url), { type: 'module' })
@@ -78,7 +82,7 @@ export async function exportImage(
       worker.terminate()
     }
     worker.postMessage(
-      { buffer: imageData.data.buffer, width: img.width, height: img.height, params: JSON.parse(JSON.stringify(params)) },
+      { buffer: imageData.data.buffer, width: img.width, height: img.height, params: JSON.parse(JSON.stringify(params)), pixelScale },
       [imageData.data.buffer]
     )
   })
