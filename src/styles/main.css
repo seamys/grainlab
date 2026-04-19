@@ -480,12 +480,21 @@ body {
   background: var(--bg-hover);
 }
 
+.section-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
 .section-title {
   font-size: 10px;
   font-weight: 600;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  flex: 1;
 }
 
 .section-toggle {

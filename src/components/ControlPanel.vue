@@ -116,6 +116,7 @@ const highlightColor = computed({
   <!-- Color Grading -->
   <div class="control-section">
     <div class="section-header" @click="toggle('color')">
+      <span class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10"/><path d="M2 12h20"/></svg></span>
       <span class="section-title">{{ $t('control.colorGrade') }}</span>
       <span class="section-toggle" :class="{ open: sections.color }">▼</span>
     </div>
@@ -228,6 +229,7 @@ const highlightColor = computed({
   <!-- Film Grain -->
   <div class="control-section">
     <div class="section-header" @click="toggle('grain')">
+      <span class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="1.5"/><circle cx="16" cy="6" r="1"/><circle cx="5" cy="15" r="1"/><circle cx="13" cy="16" r="1.5"/><circle cx="19" cy="13" r="1"/><circle cx="10" cy="12" r="1"/><circle cx="18" cy="19" r="1"/><circle cx="7" cy="20" r="1.5"/></svg></span>
       <span class="section-title">{{ $t('control.grain') }}</span>
       <span class="section-toggle" :class="{ open: sections.grain }">▼</span>
     </div>
@@ -296,6 +298,7 @@ const highlightColor = computed({
   <!-- Vignette -->
   <div class="control-section">
     <div class="section-header" @click="toggle('vignette')">
+      <span class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg></span>
       <span class="section-title">{{ $t('control.vignette') }}</span>
       <span class="section-toggle" :class="{ open: sections.vignette }">▼</span>
     </div>
@@ -353,6 +356,7 @@ const highlightColor = computed({
   <!-- Fade -->
   <div class="control-section">
     <div class="section-header" @click="toggle('fade')">
+      <span class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M2 12h20"/><path d="M12 2v20"/></svg></span>
       <span class="section-title">{{ $t('control.fade') }}</span>
       <span class="section-toggle" :class="{ open: sections.fade }">▼</span>
     </div>
@@ -374,6 +378,7 @@ const highlightColor = computed({
   <!-- Tone Curve (advanced only) -->
   <div v-if="advancedMode" class="control-section">
     <div class="section-header" @click="toggle('toneCurve')">
+      <span class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20 C7 20 9 4 12 4 S17 20 21 20"/><line x1="3" y1="20" x2="21" y2="20"/><line x1="3" y1="4" x2="3" y2="20"/></svg></span>
       <span class="section-title">{{ $t('control.toneCurve') }}</span>
       <span class="section-toggle" :class="{ open: sections.toneCurve }">▼</span>
     </div>
@@ -385,6 +390,7 @@ const highlightColor = computed({
   <!-- Light Leak (advanced only) -->
   <div v-if="advancedMode" class="control-section">
     <div class="section-header" @click="toggle('lightLeak')">
+      <span class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span>
       <span class="section-title">{{ $t('control.lightLeak') }}</span>
       <span class="section-toggle" :class="{ open: sections.lightLeak }">▼</span>
     </div>
@@ -430,6 +436,7 @@ const highlightColor = computed({
   <!-- Halation (advanced only) -->
   <div v-if="advancedMode" class="control-section">
     <div class="section-header" @click="toggle('halation')">
+      <span class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7" stroke-dasharray="2 2"/><circle cx="12" cy="12" r="10" stroke-dasharray="1 3"/></svg></span>
       <span class="section-title">{{ $t('control.halation') }}</span>
       <span class="section-toggle" :class="{ open: sections.halation }">▼</span>
     </div>
@@ -468,6 +475,7 @@ const highlightColor = computed({
   <!-- Bloom (advanced only) -->
   <div v-if="advancedMode" class="control-section">
     <div class="section-header" @click="toggle('bloom')">
+      <span class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 0 1 0 18A9 9 0 0 1 12 3z"/><path d="M12 8a4 4 0 0 1 0 8 4 4 0 0 1 0-8z"/><line x1="12" y1="3" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="21"/><line x1="3" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="21" y2="12"/></svg></span>
       <span class="section-title">{{ $t('control.bloom') }}</span>
       <span class="section-toggle" :class="{ open: sections.bloom }">▼</span>
     </div>
